@@ -209,6 +209,7 @@ var franz = {
 			franz.qsort(array, begin, pivot);
 			franz.qsort(array, pivot+1, end);
 		}
+		return false;
 	}
 	
 }
