@@ -1,0 +1,105 @@
+html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, abbr, acronym, address, big, cite, code, del, dfn, font, img, kbd, q, s, samp,
+small, strike, sub, sup, tt, var, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td {
+margin: 0; padding: 0; border: 0; outline: 0; font-weight: inherit; font-style: inherit; font-size: 100%; font-family: inherit; vertical-align: baseline; }
+:focus { outline: 0; }
+body { line-height: 1; }
+ol, ul { list-style: none; }
+table { border-collapse: separate; border-spacing: 0; }
+caption, th, td { text-align: left; font-weight: normal; }
+blockquote:before, blockquote:after, q:before, q:after { content: ""; }
+blockquote, q { quotes: "" ""; }
+
+@font-face { font-family: "Axel"; src: url(/css/Axel-Regular.ttf) format("truetype"); }
+
+html {
+    background-color: #6d7985;
+	color: #fff;
+	font: normal 62.5%/1 helvetica, sans-serif;
+	padding: 0px;
+	text-align: center;
+}
+
+body {
+    position: relative;
+    text-align: left;
+    width: 600px;
+    margin: 10px auto;
+    padding: 10px;
+}
+
+h1 {
+    font: normal 1.8em/2.4em "Axel", helvetica, sans-serif;
+    color: #fff;
+}
+
+#footer, #container_top, #container_bottom {
+    background-color: #404d59;
+	margin: 10px auto 5px;
+	text-align: left;
+	padding: 10px;
+    width: 580px;
+	-webkit-border-radius: 6px;
+    -moz-border-radius: 6px;
+    float: left;
+}
+
+#container_bottom { display: none; }
+
+#footer { text-align: center; font-size: 1.2em; line-height: 1.4em; }
+
+a, a:visited { color: #f4d496; text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+#lol_container {
+    float: left;
+    width: 100px;
+    height: 100px;
+}
+
+#lol {
+	background-color: #111;
+	-moz-border-radius: 4px;
+	-webkit-border-radius: 4px;
+}
+
+#lol_hidden { visibility: hidden; top: 0; left: 0; z-index: -10; }
+
+#interface {
+	float: right;
+	width: 460px;
+    margin-top: 34px;
+}
+
+#interface p {
+    font: normal 1.2em/1.5em helvetica, sans-serif;
+    padding: 4px 1px;
+}
+
+#img_input {
+	border: 1px solid #c9c9c9;
+	padding: 4px;
+	margin: 0 5px 0 0;
+	-moz-border-radius: 4px;
+	-webkit-border-radius: 4px;
+	width: 370px;
+}
+
+#img_submit {
+	border: 1px solid #55a2c9;
+	background-color: #498fb2;
+	color: #fff;
+	padding: 3px 5px;
+	-moz-border-radius: 4px;
+	-webkit-border-radius: 4px;
+}
+
+#log_colors { padding-left: 4px; }
+
+.color_box {
+    float: left;
+    width: 26px;
+    height: 26px;
+    -webkit-border-radius: 2px;
+    -moz-border-radius: 2px;
+    margin: 2px 6px 3px 0;
+}

@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<title>Franz - client side color palettes from logos</title>
+	<link rel="stylesheet" type="text/css" media="screen" href="css/example.css">
+	<script type="text/javascript" src="http://images.webs.com/static/global/js/jquery/jquery-1.3.2.min.js"></script>
+    <script type="text/javascript" src="js/franz.js"></script>
+    <script type="text/javascript">
+        var img_input;
+
+        $(document).ready(function() {
+            franz.init("lol");
+
+            img_input = document.getElementById("img_input");
+		    $("#franz_form").submit(function() {
+			    franz.loadImg(img_input.value);
+			    return false;
+		    });
+        });
+    </script>
+</head>
+<body>
+
+<h1>Franz - client side color swatches</h1>
+
+<div id="container_top">
+    <div id="lol_container">
+	    <canvas id="lol" width="100" height="100"></canvas>
+        <canvas id="lol_hidden" width="19" height="19"></canvas>
+    </div>
+
+	<div id="interface">
+		<form method="post" action="#" id="franz_form">
+			<input type="text" id="img_input" value="lol.png">
+			<input type="submit" id="img_submit" value="Go for it!">
+		</form>
+	    <p><strong>Try out:</strong> lol.png, testjubs.jpg, stars.jpg, 1600.jpg, fallout.jpg</p>
+    </div>
+</div>
+
+<div id="container_bottom">
+    <div id="log_colors">
+
+    </div>
+</div>
+
+<p id="footer">
+    This experiment in awesome-ness is brought to you by <a href="http://twitter.com/ryanmcgrath" title="Ryan McGrath">Ryan McGrath</a>,
+    with some help from others.
+</p>
+
+</body>
+</html>
