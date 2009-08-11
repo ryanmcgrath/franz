@@ -71,34 +71,49 @@ var franz = {
 		var min, max, delta;
 		
 		for(var i = 0; i < franz.alpha.length; i++) {
-			
-			min = Math.min(franz.red[i],Math.min(franz.green[i],franz.blue[i]));
-			max = Math.max(franz.red[i],Math.max(franz.green[i],franz.blue[i]));
-			franz.val[i] = max;
-            console.log(franz.val[i]);
-			
-			delta = max - min;
-			
-			if (max != 0)
-				franz.sat[i] = delta / max;
-			else {
-				// max val is 0, you have black
-				franz.sat[i] = 0;
-				franz.hue[i] = -1;
-				return;
-			}
-			
-			if (franz.red[i] == max)
-				franz.hue[i] = ( franz.green[i] - franz.blue[i]) / delta;	//between yellow & magenta
-			else if (franz.green[i] == max)
-				franz.hue[i] = 2 + (franz.blue[i] - franz.red[i]) / delta;	//between cyan & yellow
+			franz.val[i] = franz.getValHSV(franz.red[i],franz.green[i],franz.blue[i]);
+			franz.sat[i] = franz.getSatHSV(franz.red[i],franz.green[i],franz.blue[i]);
+			franz.hue[i] = franz.getHueHSV(franz.red[i],franz.green[i],franz.blue[i]);
+		}
+		
+		return false
+	},
+	
+	getValHSV: function(red, green, blue) {
+		return Math.max(red,Math.max(green,blue));
+	},
+	getSatHSV: function(red, green, blue) {
+		var min, max, delta, sat;
+		
+		min = Math.min(red,Math.min(green,blue));
+		max = Math.max(red,Math.max(green,blue));
+		delta = max - min;
+		sat = delta / max;
+		
+		return sat;
+	},
+	getHueHSV: function(red,green,blue) {
+		var min, max, delta, hue;
+		
+		min = Math.min(red,Math.min(green,blue));
+		max = Math.max(red,Math.max(green,blue));
+		delta = max - min;
+		if (max == 0)
+			return -1;
+		else {
+			if (red == max)
+				hue = ( green - blue) / delta;	//between yellow & magenta
+			else if (green == max)
+				hue = 2 + (blue - red) / delta;	//between cyan & yellow
 			else
-				franz.hue[i] = 4 + (franz.red[i] - franz.green[i]) / delta;	//between magenta & cyan
+				hue = 4 + (red - green) / delta;	//between magenta & cyan
 			
 			// hue degrees
-			franz.hue[i] = franz.hue[i] * 60;
-			if (franz.hue[i] < 0)		franz.hue[i] += 360;
+			hue = hue * 60;
+			if (hue < 0)	hue += 360;
 		}
+		
+		return hue;
 	},
 	
 	displayHue: function() {	
