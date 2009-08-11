@@ -34,7 +34,9 @@ var franz = {
         
         extra_ctx.drawImage(franz.img, 0, 0, 19, 19);
 		var imageData = extra_ctx.getImageData(1, 1, 18, 18).data;
-       
+
+        console.log("Initial data array: " + imageData.length);
+
         for(var i = 0; i*4 < imageData.length; i++) {
             franz.red[i] = imageData[i*4];
             franz.green[i] = imageData[i*4 + 1];
@@ -44,12 +46,13 @@ var franz = {
 		
 		/* get hue sat val array */
 		franz.RGBtoHSV();
-		
+
 		/* show original image */
 		franz.displayImg();
 		
 		return false;
 	},
+
 	displayImg: function() {
 		var docString = "";
 		
@@ -63,8 +66,6 @@ var franz = {
 		return false;
 	},
 	
-	
-	
 	/* Converts RGB to the Hue/Saturation/Value model */
 	RGBtoHSV: function() {
 		var min, max, delta;
@@ -74,6 +75,7 @@ var franz = {
 			min = Math.min(franz.red[i],Math.min(franz.green[i],franz.blue[i]));
 			max = Math.max(franz.red[i],Math.max(franz.green[i],franz.blue[i]));
 			franz.val[i] = max;
+            console.log(franz.val[i]);
 			
 			delta = max - min;
 			
