@@ -47,6 +47,8 @@ h1 {
     line-height: 1.2em;
     -moz-border-radius-bottomleft: 4px;
     -moz-border-radius-bottomright: 4px;
+    -webkit-border-bottom-left-radius: 4px;
+    -webkit-border-bottom-right-radius: 4px;
 }
 
 #upload_button:hover {
