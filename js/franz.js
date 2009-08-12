@@ -34,6 +34,8 @@ var franz = {
 		return false;
 	},
 
+    rgb_obj: function(r, g, b, a) { return {r: r, b: b, g: g, a: a}; },
+
     clone: function(obj) {
         /* Recursively iterate through objects and clone them (Don't even try to put this on the Object prototype (recursion fail)) */
         var returnObj = (obj instanceof Array) ? [] : {};
