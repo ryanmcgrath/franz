@@ -84,7 +84,7 @@ a:hover { text-decoration: underline; }
 	width: 370px;
 }
 
-#img_submit, #hsv a {
+#img_submit, #hsv a, #hsl a {
 	border: 1px solid #55a2c9;
 	background-color: #498fb2;
 	color: #fff;
@@ -92,7 +92,7 @@ a:hover { text-decoration: underline; }
 	-moz-border-radius: 4px;
 	-webkit-border-radius: 4px;
 }
-#hsv a {
+#hsv a, #hsl a {
 	display: block;
 	width: 104px;
 	padding: 0 5px;
@@ -101,6 +101,10 @@ a:hover { text-decoration: underline; }
 	margin-right: 15px;
 	text-decoration: none;
 }
+#hsl a {
+	width: 150px;
+}
+
 #try_these {
 	clear: both;
 }

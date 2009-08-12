@@ -16,6 +16,7 @@
 		    $("#franz_form").submit(function() {
 			    franz.loadImg(img_input.value);
 				$("#hsv").removeClass("hideme");
+				$("#hsl").removeClass("hideme");
 			    return false;
 		    });
 			
@@ -28,14 +29,20 @@
 				franz.displayHue();
 				return false;
 			}); 
-			
 			$("#sort_sat").click(function(event){
 				franz.displaySat();
 				return false;
 			}); 
-			
 			$("#sort_val").click(function(event){
 				franz.displayVal();
+				return false;
+			});
+			$("#sort_light").click(function(event){
+				franz.displayLight();
+				return false;
+			});
+			$("#sort_satL").click(function(event){
+				franz.displaySatL();
 				return false;
 			});
         });
@@ -57,6 +64,7 @@
 			<input type="submit" id="img_submit" value="Go for it!">
 		</form>
 		<p id="hsv" class="hideme"><a href="#" id="sort_hue">Sort Hue</a> <a href="#" id="sort_sat">Sort Saturation</a> <a href="#" id="sort_val">Sort Value</a> </p>
+		<p id="hsl" class="hideme"><a href="#" id="sort_satL">Sort Saturation HSL</a> <a href="#" id="sort_light">Sort Lightness</a> </p>
 	    <p id="try_these"><strong>Try out:</strong> <a href="#">lol.png</a>, <a href="#">testjubs.jpg</a>, <a href="#">stars.jpg</a>, <a href="#">1600.jpg</a>, <a href="#">fallout.jpg</a></p>
 		
     </div>

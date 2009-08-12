@@ -18,7 +18,6 @@ var franz = {
 	canvas: {},
 	ctx: {},
     img: {},
-    final_colors: [],
 	red: [],
 	green: [],
 	blue: [],
@@ -26,6 +25,8 @@ var franz = {
 	hue: [],
 	sat: [],
 	val: [],
+	satL: [],
+	light: [],
 	origIndex: [],
 
 	init: function(canvas_id) {
@@ -75,7 +76,7 @@ var franz = {
         }
 		
 		/* get hue sat val array */
-		franz.RGBtoHSV();
+		franz.RGBtoHSVHL();
 
 		/* show original image */
 		franz.displayImg();
@@ -83,33 +84,23 @@ var franz = {
 		return false;
 	},
 	
-	/* Converts RGB to the Hue/Saturation/Value model */
-	RGBtoHSV: function() {
-		var min, max, delta;
+	/* Converts RGB to the Hue/Saturation/Value, Saturation/Lightness model */
+	RGBtoHSVHL: function() {
+		var min, max;
 		
 		for(var i = 0; i < franz.alpha.length; i++) {
 			franz.val[i] = franz.getValHSV(franz.red[i],franz.green[i],franz.blue[i]);
 			franz.sat[i] = franz.getSatHSV(franz.red[i],franz.green[i],franz.blue[i]);
-			franz.hue[i] = franz.getHueHSV(franz.red[i],franz.green[i],franz.blue[i]);
+			franz.hue[i] = franz.getHue(franz.red[i],franz.green[i],franz.blue[i]);
+			
+			franz.satL[i] = franz.getSatHSL(franz.red[i],franz.green[i],franz.blue[i]);
+			franz.light[i] = franz.getLightHSL(franz.red[i],franz.green[i],franz.blue[i]);
 		}
 		
 		return false
 	},
-	
-	getValHSV: function(red, green, blue) { return Math.max(red,Math.max(green,blue)); },
-	
-    getSatHSV: function(red, green, blue) {
-		var min, max, delta, sat;
-		
-		min = Math.min(red,Math.min(green,blue));
-		max = Math.max(red,Math.max(green,blue));
-		delta = max - min;
-		sat = delta / max;
-		
-		return sat;
-	},
 
-	getHueHSV: function(red,green,blue) {
+	getHue: function(red,green,blue) {
 		var min, max, delta, hue;
 		
 		min = Math.min(red,Math.min(green,blue));
@@ -134,6 +125,40 @@ var franz = {
 		return hue;
 	},
 	
+    getSatHSV: function(red, green, blue) {
+		var min, max, delta, sat;
+		
+		min = Math.min(red,Math.min(green,blue));
+		max = Math.max(red,Math.max(green,blue));
+		delta = max - min;
+		sat = delta / max;
+		
+		return sat;
+	},
+	
+	getValHSV: function(red, green, blue) { return Math.max(red,Math.max(green,blue)); },
+	
+	getSatHSL: function(red, green, blue) {
+		var min, max, sat;
+		var lightness = franz.getLightHSL();
+		
+		min = Math.min(red,Math.min(green,blue));
+		max = Math.max(red,Math.max(green,blue));
+		
+		if (min == max)	return 0;
+		
+		if (lightness < 1/2)	sat = (max-min)/(max+min);
+		else	sat = (max-min)/(2 - (max+min));
+		
+		return sat;		
+	},
+	
+	getLightHSL: function(red, green, blue) {
+		var min, max;
+		min = Math.min(red,Math.min(green,blue));
+		max = Math.max(red,Math.max(green,blue));
+		return 1/2*(min+max);
+	},
 	
 	/* routines to display color swatches */
 	displayColors: function(order_array) {
@@ -177,6 +202,18 @@ var franz = {
 	displayVal: function() {
 		franz.resetIndex();
 		franz.qsort(franz.clone(franz.val), 0, franz.alpha.length);	
+		franz.displayColors(franz.origIndex);
+		return false;
+	},
+	displaySatL: function() {
+		franz.resetIndex();
+		franz.qsort(franz.clone(franz.satL), 0, franz.alpha.length);	
+		franz.displayColors(franz.origIndex);
+		return false;
+	},
+	displayLight: function() {
+		franz.resetIndex();
+		franz.qsort(franz.clone(franz.light), 0, franz.alpha.length);	
 		franz.displayColors(franz.origIndex);
 		return false;
 	},
