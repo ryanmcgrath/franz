@@ -1,3 +1,19 @@
+/*  Franz.js - Client side color swatches (awesomeness)
+ *  
+ *  @Author Ryan McGrath (http://twitter.com/ryanmcgrath)
+ *  @Author Dominick Pham (http://twitter.com/enotionz)
+ */
+
+/* Define some basic prototypes that we'll require later... */
+
+Array.prototype.swap = function(a, b) {
+	var tmp = this[a];
+	this[a] = this[b];
+	this[b] = tmp;
+    return true; /* For the sake of being complete */
+}
+
+/* Franz - this is where the magic happens, pay close attention. ;) */
 var franz = {
 	canvas: {},
 	ctx: {},
@@ -18,6 +34,22 @@ var franz = {
 		return false;
 	},
 
+    clone: function(obj) {
+        /* Recursively iterate through objects and clone them (Don't even try to put this on the Object prototype (recursion fail)) */
+        var returnObj = (obj instanceof Array) ? [] : {};
+    
+        for(i in obj) {
+            if(i == 'clone') continue;
+            if(obj[i] && typeof obj[i] == "object") {
+                returnObj[i] = obj[i].clone();
+            } else {
+                returnObj[i] = obj[i];
+            }
+        }
+
+        return returnObj;
+    },
+
 	loadImg: function(img_src) {
 		franz.img = new Image();
 		franz.img.onload = function() {
@@ -34,8 +66,6 @@ var franz = {
         
         extra_ctx.drawImage(franz.img, 0, 0, 19, 19);
 		var imageData = extra_ctx.getImageData(1, 1, 18, 18).data;
-
-        console.log("Initial data array: " + imageData.length);
 
         for(var i = 0; i*4 < imageData.length; i++) {
             franz.red[i] = imageData[i*4];
@@ -79,10 +109,9 @@ var franz = {
 		return false
 	},
 	
-	getValHSV: function(red, green, blue) {
-		return Math.max(red,Math.max(green,blue));
-	},
-	getSatHSV: function(red, green, blue) {
+	getValHSV: function(red, green, blue) { return Math.max(red,Math.max(green,blue)); },
+	
+    getSatHSV: function(red, green, blue) {
 		var min, max, delta, sat;
 		
 		min = Math.min(red,Math.min(green,blue));
@@ -92,17 +121,19 @@ var franz = {
 		
 		return sat;
 	},
+
 	getHueHSV: function(red,green,blue) {
 		var min, max, delta, hue;
 		
 		min = Math.min(red,Math.min(green,blue));
 		max = Math.max(red,Math.max(green,blue));
 		delta = max - min;
-		if (max == 0)
+		
+        if (max == 0)
 			return -1;
 		else {
 			if (red == max)
-				hue = ( green - blue) / delta;	//between yellow & magenta
+				hue = (green - blue) / delta;	//between yellow & magenta
 			else if (green == max)
 				hue = 2 + (blue - red) / delta;	//between cyan & yellow
 			else
@@ -110,7 +141,7 @@ var franz = {
 			
 			// hue degrees
 			hue = hue * 60;
-			if (hue < 0)	hue += 360;
+			if (hue < 0) hue += 360;
 		}
 		
 		return hue;
@@ -212,12 +243,4 @@ var franz = {
 		return false;
 	}
 	
-}
-
-/* define swap method for Array object */
-Array.prototype.swap=function(a, b)
-{
-	var tmp=this[a];
-	this[a]=this[b];
-	this[b]=tmp;
 }
