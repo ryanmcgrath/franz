@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<title>Franz - client side color palettes from logos</title>
+	<link rel="stylesheet" type="text/css" media="screen" href="css/example.css">
+	<script type="text/javascript" src="http://images.webs.com/static/global/js/jquery/jquery-1.3.2.min.js"></script>
+    <script type="text/javascript" src="js/franz.js"></script>
+    <script type="text/javascript">
+        var img_input;
+
+        $(document).ready(function() {
+            franz.init("lol");
+
+            img_input = document.getElementById("img_input");
+		    $("#franz_form").submit(function() {
+			    franz.loadImg(img_input.value);
+				$("#hsv").removeClass("hideme");
+				$("#hsl").removeClass("hideme");
+			    return false;
+		    });
+			
+			$("#try_these a").click(function(event){
+				img_input.value = this.innerHTML;
+				return false;
+			}); 
+			
+			$("#sort_hue").click(function(event){
+				franz.displayHue();
+				return false;
+			}); 
+			$("#sort_sat").click(function(event){
+				franz.displaySat();
+				return false;
+			}); 
+			$("#sort_val").click(function(event){
+				franz.displayVal();
+				return false;
+			});
+			$("#sort_light").click(function(event){
+				franz.displayLight();
+				return false;
+			});
+			$("#sort_satL").click(function(event){
+				franz.displaySatL();
+				return false;
+			});
+        });
+    </script>
+</head>
+<body>
+
+<h1>Franz - client side color swatches</h1>
+
+<div id="container_top">
+    <div id="lol_container">
+	    <canvas id="lol" width="100" height="100"></canvas>
+        <canvas id="lol_hidden" width="19" height="19"></canvas>
+    </div>
+
+	<div id="interface">
+		<form method="post" action="#" id="franz_form">
+			<input type="text" id="img_input" value="lol.png">
+			<input type="submit" id="img_submit" value="Go for it!">
+		</form>
+		<p id="hsv" class="hideme"><a href="#" id="sort_hue">Sort Hue</a> <a href="#" id="sort_sat">Sort Saturation</a> <a href="#" id="sort_val">Sort Value</a> </p>
+		<p id="hsl" class="hideme"><a href="#" id="sort_satL">Sort Saturation HSL</a> <a href="#" id="sort_light">Sort Lightness</a> </p>
+	    <p id="try_these"><strong>Try out:</strong> <a href="#">lol.png</a>, <a href="#">testjubs.jpg</a>, <a href="#">stars.jpg</a>, <a href="#">1600.jpg</a>, <a href="#">fallout.jpg</a></p>
+		
+    </div>
+	
+	<!-- might log colors later on
+	<ul id="logHSV">
+		<li><p id="logHue">Hue: </p></li>
+		<li><p id="logSat">Sat: </p></li>
+		<li><p id="logVal">Val: </p></li>
+	</ul> -->
+</div>
+
+<div id="container_bottom">
+    <div id="log_colors">
+
+    </div>
+</div>
+
+<p id="footer">
+    Experiment in color theme generator <br> brought to you by <a href="http://twitter.com/ryanmcgrath" title="Ryan McGrath">Ryan McGrath</a> & <a href="http://twitter.com/enotionz" title="Dominick Pham">Dominick Pham</a>,
+    with some help from others. 
+</p>
+
+</body>
+</html>

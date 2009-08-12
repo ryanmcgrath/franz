@@ -21,8 +21,25 @@
 
             img_input = document.getElementById("img_input");
 		    $("#franz_form").submit(lol);
+	
+            $("#upload_button").click(function() {
+                var f_form = $("#franz_form"),
+                    uploader = $("#uploader");
+
+                if(f_form[0].style.display == "none") {
+                    uploader.hide();
+                    f_form.fadeIn("slow");
+                    $(this).html("Upload an image");
+                } else {
+                    f_form.hide();
+                    uploader.fadeIn("slow");
+                    $(this).html("Use an existing image?");
+                }
+                
+                return false;
+            });		
 			
-			$("#try_these a").click(function() {
+            $("#try_these a").click(function() {
 				img_input.value = this.innerHTML;
 				return false;
 			}); 
@@ -46,23 +63,17 @@
 				franz.displayVal();
 				return false;
 			});
+            
+            $("#sort_light").click(function() {
+				franz.displayLight();
+				return false;
+			});
+			
+            $("#sort_satL").click(function() {
+				franz.displaySatL();
+				return false;
+			});
 
-            $("#upload_button").click(function() {
-                var f_form = $("#franz_form"),
-                    uploader = $("#uploader");
-
-                if(f_form[0].style.display == "none") {
-                    uploader.hide();
-                    f_form.fadeIn("slow");
-                    $(this).html("Upload an image");
-                } else {
-                    f_form.hide();
-                    uploader.fadeIn("slow");
-                    $(this).html("Use an existing image?");
-                }
-                
-                return false;
-            });
         });
     </script>
 </head>
@@ -107,8 +118,9 @@
 <div id="options">
 	<p id="hsv">
         <a href="#" id="sort_hue" title="Sort by Hue">Sort by Hue</a> 
-        <a href="#" id="sort_sat" title="Sort by Saturation">Sort by Saturation</a> 
-        <a href="#" id="sort_val" title="Sort by Value">Sort by Value</a> 
+        <a href="#" id="sort_sat" title="Sort by Saturation">Sort by Saturation</a>  
+        <a href="#" id="sort_satL" title="Sort by Saturation HSL">Sort by Sat HSL</a> 
+        <a href="#" id="sort_light" title="Sort by Lightness">Sort by Lightness</a> 
     </p>
 </div>
 

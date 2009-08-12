@@ -71,8 +71,6 @@ h1 {
 
 #options { display: none; padding-top: 6px; }
 
-#options a:first-child { margin-left: 66px; /* Huzzah for decent CSS support, but horrid CSS right here. :D */ }
-
 a, a:visited { color: #f4d496; text-decoration: none; }
 a:hover { text-decoration: underline; }
 
@@ -112,7 +110,7 @@ a:hover { text-decoration: underline; }
 	width: 370px;
 }
 
-.img_submit, #hsv a {
+.img_submit, #hsv a, #hsl a {
 	border: 1px solid #55a2c9;
 	background-color: #498fb2;
 	color: #fff;
@@ -121,15 +119,17 @@ a:hover { text-decoration: underline; }
 	-webkit-border-radius: 4px;
 }
 
-#hsv a {
+#hsv a, #hsl a {
 	display: block;
-	width: 120px;
-	padding: 3px 5px;
+	width: 135px;
+	padding: 3px 0;
 	text-align: center;
 	float: left;
-	margin-right: 15px;
+	margin-right: 10px;
 	text-decoration: none;
 }
+
+#options a:last-child { margin-right: 0px; }
 
 #try_these {
 	clear: both;
@@ -147,7 +147,6 @@ a:hover { text-decoration: underline; }
 	float: left;
 	width: 70px;
 }
-
 
 #log_colors { padding-left: 4px; }
 
