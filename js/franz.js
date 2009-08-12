@@ -156,7 +156,7 @@ var franz = {
 			franz.origIndex[i] = i;
 		}
 		
-		franz.qsort(franz.hue, 0, franz.hue.length);
+		franz.qsort(franz.clone(franz.hue), 0, franz.alpha.length);
 		
 		for(var i = 0; i < franz.alpha.length; i++) {
 			docString += '<div class="color_box" style="background-color: rgb(' + franz.red[franz.origIndex[i]] + ', ' +  franz.green[franz.origIndex[i]] + ',' + franz.blue[franz.origIndex[i]] + ');"></div>';
@@ -177,7 +177,7 @@ var franz = {
 			franz.origIndex[i] = i;
 		}
 		
-		franz.qsort(franz.sat, 0, franz.sat.length);
+		franz.qsort(franz.clone(franz.sat), 0, franz.alpha.length);
 		
 		for(var i = 0; i < franz.alpha.length; i++) {
 			docString += '<div class="color_box" style="background-color: rgb(' + franz.red[franz.origIndex[i]] + ', ' +  franz.green[franz.origIndex[i]] + ',' + franz.blue[franz.origIndex[i]] + ');"></div>';
@@ -198,7 +198,7 @@ var franz = {
 			franz.origIndex[i] = i;
 		}
 		
-		franz.qsort(franz.val, 0, franz.val.length);
+		franz.qsort(franz.clone(franz.val), 0, franz.alpha.length);
 		
 		for(var i = 0; i < franz.alpha.length; i++) {
 			docString += '<div class="color_box" style="background-color: rgb(' + franz.red[franz.origIndex[i]] + ', ' +  franz.green[franz.origIndex[i]] + ',' + franz.blue[franz.origIndex[i]] + ');"></div>';

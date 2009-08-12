@@ -107,6 +107,20 @@ a:hover { text-decoration: underline; }
 	clear: both;
 }
 
+#logHSV {
+	border-top: 1px solid #6D7985;
+	clear: both;
+	float: left;
+	margin-top: 10px;
+	width: 578px;
+	padding-top: 15px;
+}
+#logHSV li {
+	float: left;
+	width: 70px;
+}
+
+
 #log_colors { padding-left: 4px; }
 
 .color_box {
