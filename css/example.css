@@ -121,7 +121,7 @@ a:hover { text-decoration: underline; }
 
 #hsv a, #hsl a {
 	display: block;
-	width: 135px;
+	width: 105px;
 	padding: 3px 0;
 	text-align: center;
 	float: left;

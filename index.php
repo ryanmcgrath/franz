@@ -118,9 +118,10 @@
 <div id="options">
 	<p id="hsv">
         <a href="#" id="sort_hue" title="Sort by Hue">Sort by Hue</a> 
-        <a href="#" id="sort_sat" title="Sort by Saturation">Sort by Saturation</a>  
-        <a href="#" id="sort_satL" title="Sort by Saturation HSL">Sort by Sat HSL</a> 
-        <a href="#" id="sort_light" title="Sort by Lightness">Sort by Lightness</a> 
+        <a href="#" id="sort_sat" title="Sort by Saturation HSV">Saturation (HSV)</a>  
+        <a href="#" id="sort_satL" title="Sort by Saturation HSL">Saturation (HSL)</a> 
+        <a href="#" id="sort_val" title="Sort by Value">Value (HSV)</a> 
+        <a href="#" id="sort_light" title="Sort by Lightness">Lightness (HSL)</a> 
     </p>
 </div>
 
