@@ -82,19 +82,6 @@ var franz = {
 		
 		return false;
 	},
-
-	displayImg: function() {
-		var docString = "";
-		
-		for(var i = 0; i < franz.alpha.length; i++) {
-			docString += '<div class="color_box" style="background-color: rgb(' + franz.red[i] + ', ' +  franz.green[i] + ',' + franz.blue[i] + ');"></div>';
-		}
-        
-        document.getElementById("log_colors").innerHTML = docString;
-        $("#container_bottom").fadeIn("slow");
-		
-		return false;
-	},
 	
 	/* Converts RGB to the Hue/Saturation/Value model */
 	RGBtoHSV: function() {
@@ -147,19 +134,13 @@ var franz = {
 		return hue;
 	},
 	
-	displayHue: function() {	
+	
+	/* routines to display color swatches */
+	displayColors: function(order_array) {
 		var docString = "";
 		
-		/* keep track of original index so we don't have to revert
-			back to RGB just to display output */
-		for (var i=0; i < franz.alpha.length; i++) {
-			franz.origIndex[i] = i;
-		}
-		
-		franz.qsort(franz.clone(franz.hue), 0, franz.alpha.length);
-		
 		for(var i = 0; i < franz.alpha.length; i++) {
-			docString += '<div class="color_box" style="background-color: rgb(' + franz.red[franz.origIndex[i]] + ', ' +  franz.green[franz.origIndex[i]] + ',' + franz.blue[franz.origIndex[i]] + ');"></div>';
+			docString += '<div class="color_box" style="background-color: rgb(' + franz.red[order_array[i]] + ', ' +  franz.green[order_array[i]] + ',' + franz.blue[order_array[i]] + ');"></div>';
 		}
         
         document.getElementById("log_colors").innerHTML = docString;
@@ -167,51 +148,41 @@ var franz = {
 		
 		return false;
 	},
-	
-	displaySat: function() {	
-		var docString = "";
-		
+	resetIndex: function() {
 		/* keep track of original index so we don't have to revert
-			back to RGB just to display output */
+		back to RGB just to display output */
 		for (var i=0; i < franz.alpha.length; i++) {
 			franz.origIndex[i] = i;
 		}
-		
-		franz.qsort(franz.clone(franz.sat), 0, franz.alpha.length);
-		
-		for(var i = 0; i < franz.alpha.length; i++) {
-			docString += '<div class="color_box" style="background-color: rgb(' + franz.red[franz.origIndex[i]] + ', ' +  franz.green[franz.origIndex[i]] + ',' + franz.blue[franz.origIndex[i]] + ');"></div>';
-		}
-        
-        document.getElementById("log_colors").innerHTML = docString;
-        $("#container_bottom").fadeIn("slow");
-		
 		return false;
 	},
-	
-	displayVal: function() {	
-		var docString = "";
-		
-		/* keep track of original index so we don't have to revert
-			back to RGB just to display output */
-		for (var i=0; i < franz.alpha.length; i++) {
-			franz.origIndex[i] = i;
-		}
-		
-		franz.qsort(franz.clone(franz.val), 0, franz.alpha.length);
-		
-		for(var i = 0; i < franz.alpha.length; i++) {
-			docString += '<div class="color_box" style="background-color: rgb(' + franz.red[franz.origIndex[i]] + ', ' +  franz.green[franz.origIndex[i]] + ',' + franz.blue[franz.origIndex[i]] + ');"></div>';
-		}
-        
-        document.getElementById("log_colors").innerHTML = docString;
-        $("#container_bottom").fadeIn("slow");
-		
+
+	displayImg: function() {
+		franz.resetIndex();
+		franz.displayColors(franz.origIndex);
+		return false;
+	},
+	displayHue: function() {
+		franz.resetIndex();
+		franz.qsort(franz.clone(franz.hue), 0, franz.alpha.length);	
+		franz.displayColors(franz.origIndex);
+		return false;
+	},
+	displaySat: function() {
+		franz.resetIndex();
+		franz.qsort(franz.clone(franz.sat), 0, franz.alpha.length);	
+		franz.displayColors(franz.origIndex);
+		return false;
+	},
+	displayVal: function() {
+		franz.resetIndex();
+		franz.qsort(franz.clone(franz.val), 0, franz.alpha.length);	
+		franz.displayColors(franz.origIndex);
 		return false;
 	},
 	
 	
-	/* quicksort algorithm with that also swaps original index */
+	/* quicksort algorithm that also swaps an index array */
 	sort_Partition: function(array, begin, end, pivot) {
 		var piv=array[pivot];
 		array.swap(pivot, end-1);
