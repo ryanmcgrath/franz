@@ -40,8 +40,8 @@ var franz = {
     
         for(i in obj) {
             if(i == 'clone') continue;
-            if(obj[i] && typeof obj[i] == "object") {
-                returnObj[i] = obj[i].clone();
+            if(obj[i] != null && typeof obj[i] == "object") {
+                returnObj[i] = franz.clone(obj[i]);
             } else {
                 returnObj[i] = obj[i];
             }
