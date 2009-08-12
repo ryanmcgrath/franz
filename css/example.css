@@ -67,13 +67,15 @@ a:hover { text-decoration: underline; }
 #interface {
 	float: right;
 	width: 460px;
-    margin-top: 34px;
+    margin-top: 23px;
 }
 
 #interface p {
     font: normal 1.2em/1.5em helvetica, sans-serif;
     padding: 4px 1px;
 }
+
+#hsv a { margin-top: 4px; }
 
 #img_input {
 	border: 1px solid #c9c9c9;
