@@ -173,11 +173,12 @@ var franz = {
 		
 		return false;
 	},
+
 	resetIndex: function() {
 		/* keep track of original index so we don't have to revert
 		back to RGB just to display output */
 		for (var i=0; i < franz.alpha.length; i++) {
-			franz.origIndex[i] = i;
+            franz.origIndex[i] = i;
 		}
 		return false;
 	},
@@ -187,37 +188,41 @@ var franz = {
 		franz.displayColors(franz.origIndex);
 		return false;
 	},
-	displayHue: function() {
+	
+    displayHue: function() {
 		franz.resetIndex();
 		franz.qsort(franz.clone(franz.hue), 0, franz.alpha.length);	
 		franz.displayColors(franz.origIndex);
 		return false;
 	},
-	displaySat: function() {
+	
+    displaySat: function() {
 		franz.resetIndex();
 		franz.qsort(franz.clone(franz.sat), 0, franz.alpha.length);	
 		franz.displayColors(franz.origIndex);
 		return false;
 	},
-	displayVal: function() {
+	
+    displayVal: function() {
 		franz.resetIndex();
 		franz.qsort(franz.clone(franz.val), 0, franz.alpha.length);	
 		franz.displayColors(franz.origIndex);
 		return false;
 	},
-	displaySatL: function() {
+	
+    displaySatL: function() {
 		franz.resetIndex();
 		franz.qsort(franz.clone(franz.satL), 0, franz.alpha.length);	
 		franz.displayColors(franz.origIndex);
 		return false;
 	},
-	displayLight: function() {
+	
+    displayLight: function() {
 		franz.resetIndex();
 		franz.qsort(franz.clone(franz.light), 0, franz.alpha.length);	
 		franz.displayColors(franz.origIndex);
 		return false;
 	},
-	
 	
 	/* quicksort algorithm that also swaps an index array */
 	sort_Partition: function(array, begin, end, pivot) {
