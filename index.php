@@ -5,7 +5,7 @@
 	<title>Franz - client side color palettes from logos</title>
 	<link rel="stylesheet" type="text/css" media="screen" href="css/example.css">
     <script type="text/javascript" src="http://images.webs.com/static/global/js/jquery/jquery-1.3.2.min.js"></script>
-    <script type="text/javascript" src="js/franz.js"></script>
+	<script type="text/javascript" src="js/franz.js"></script>
     <script type="text/javascript" src="http://www.google-analytics.com/ga.js"></script>
     <script type="text/javascript">
         var img_input;

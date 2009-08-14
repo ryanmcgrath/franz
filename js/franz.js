@@ -13,20 +13,30 @@ Array.prototype.swap = function(a, b) {
     return true; /* For the sake of being complete */
 }
 
+/* allows numeric sorting for built in js sort */
+function sortNumber(a,b) { return a - b;}
+
 /* Franz - this is where the magic happens, pay close attention. ;) */
 var franz = {
 	canvas: {},
 	ctx: {},
     img: {},
-	red: [],
-	green: [],
-	blue: [],
-	alpha: [],
-	hue: [],
-	sat: [],
-	val: [],
-	satL: [],
-	light: [],
+	
+	rgb: {
+		alpha: [],
+		red: [],
+		green: [],
+		blue: []
+	},
+	
+	hsvl: {
+		hue: [],
+		satV: [],
+		value: [],
+		satL: [],
+		light: []
+	},	
+
 	origIndex: [],
 
 	init: function(canvas_id) {
@@ -69,10 +79,10 @@ var franz = {
 		var imageData = extra_ctx.getImageData(1, 1, 18, 18).data;
 
         for(var i = 0; i*4 < imageData.length; i++) {
-            franz.red[i] = imageData[i*4];
-            franz.green[i] = imageData[i*4 + 1];
-            franz.blue[i] = imageData[i*4 + 2];
-			franz.alpha[i] = imageData[i*4 + 3];
+            franz.rgb.red[i] = imageData[i*4];
+            franz.rgb.green[i] = imageData[i*4 + 1];
+            franz.rgb.blue[i] = imageData[i*4 + 2];
+			franz.rgb.alpha[i] = imageData[i*4 + 3];
         }
 
 		/* get hue sat val array */
@@ -88,13 +98,13 @@ var franz = {
 	RGBtoHSVHL: function() {
 		var min, max;
 		
-		for(var i = 0; i < franz.alpha.length; i++) {
-			franz.val[i] = franz.getValHSV(franz.red[i],franz.green[i],franz.blue[i]);
-			franz.sat[i] = franz.getSatHSV(franz.red[i],franz.green[i],franz.blue[i]);
-			franz.hue[i] = franz.getHue(franz.red[i],franz.green[i],franz.blue[i]);
+		for(var i = 0; i < franz.rgb.alpha.length; i++) {
+			franz.hsvl.value[i] = franz.getValHSV(franz.rgb.red[i],franz.rgb.green[i],franz.rgb.blue[i]);
+			franz.hsvl.satV[i] = franz.getSatHSV(franz.rgb.red[i],franz.rgb.green[i],franz.rgb.blue[i]);
+			franz.hsvl.hue[i] = franz.getHue(franz.rgb.red[i],franz.rgb.green[i],franz.rgb.blue[i]);
 			
-			franz.satL[i] = franz.getSatHSL(franz.red[i],franz.green[i],franz.blue[i]);
-			franz.light[i] = franz.getLightHSL(franz.red[i],franz.green[i],franz.blue[i]);
+			franz.hsvl.satL[i] = franz.getSatHSL(franz.rgb.red[i],franz.rgb.green[i],franz.rgb.blue[i]);
+			franz.hsvl.light[i] = franz.getLightHSL(franz.rgb.red[i],franz.rgb.green[i],franz.rgb.blue[i]);
 		}
 		
 		return false
@@ -160,7 +170,6 @@ var franz = {
 		
         for(var i = 0; i < franz.alpha.length; i++) {
 			docStr += '<div class="color_box" style="background-color: rgb(' + franz.red[order_array[i]] + ', ' + franz.green[order_array[i]] + ',' + franz.blue[order_array[i]] + ');"></div>';
-		}
 
         document.getElementById("log_colors").innerHTML = docStr;
         if(typeof jQuery != "undefined") $("#container_bottom").fadeIn("slow");
@@ -172,7 +181,7 @@ var franz = {
 	resetIndex: function() {
 		/* keep track of original index so we don't have to revert
 		back to RGB just to display output */
-		for (var i=0; i < franz.alpha.length; i++) {
+		for (var i=0; i < franz.rgb.alpha.length; i++) {
             franz.origIndex[i] = i;
 		}
 		return false;
@@ -185,40 +194,48 @@ var franz = {
 	},
 	
     displayHue: function() {
-		franz.resetIndex();
-		franz.qsort(franz.clone(franz.hue), 0, franz.alpha.length);	
+		franz.bubbleSort(franz.clone(franz.hsvl.hue), 0, franz.rgb.alpha.length);
 		franz.displayColors(franz.origIndex);
 		return false;
 	},
 	
     displaySat: function() {
-		franz.resetIndex();
-		franz.qsort(franz.clone(franz.sat), 0, franz.alpha.length);	
+		franz.bubbleSort(franz.clone(franz.hsvl.satV), 0, franz.rgb.alpha.length);	
 		franz.displayColors(franz.origIndex);
 		return false;
 	},
 	
     displayVal: function() {
-		franz.resetIndex();
-		franz.qsort(franz.clone(franz.val), 0, franz.alpha.length);	
+		franz.bubbleSort(franz.clone(franz.hsvl.value), 0, franz.rgb.alpha.length);	
 		franz.displayColors(franz.origIndex);
 		return false;
 	},
 	
     displaySatL: function() {
-		franz.resetIndex();
-		franz.qsort(franz.clone(franz.satL), 0, franz.alpha.length);	
+		franz.bubbleSort(franz.clone(franz.hsvl.satL), 0, franz.rgb.alpha.length);	
 		franz.displayColors(franz.origIndex);
 		return false;
 	},
 	
     displayLight: function() {
-		franz.resetIndex();
-		franz.qsort(franz.clone(franz.light), 0, franz.alpha.length);	
+		franz.bubbleSort(franz.clone(franz.hsvl.light), 0, franz.rgb.alpha.length);	
 		franz.displayColors(franz.origIndex);
 		return false;
 	},
 	
+	/* bubble sort */
+	bubbleSort: function(inputArray, start, end) {
+		franz.resetIndex();
+		for (var i = start; i < end;  i++) {
+			for (var j = start; j < end; j++) {
+				var diff = inputArray[j] - inputArray[i]
+				if (diff > 0) {
+					inputArray.swap(i,j+1);
+					franz.origIndex.swap(i,j+1);
+				}
+			}
+		}
+	},
 	/* quicksort algorithm that also swaps an index array */
 	sort_Partition: function(array, begin, end, pivot) {
 		var piv=array[pivot];
