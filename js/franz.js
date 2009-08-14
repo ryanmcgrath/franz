@@ -168,8 +168,9 @@ var franz = {
 	displayColors: function(order_array) {
         var docStr = "";
 		
-        for(var i = 0; i < franz.alpha.length; i++) {
-			docStr += '<div class="color_box" style="background-color: rgb(' + franz.red[order_array[i]] + ', ' + franz.green[order_array[i]] + ',' + franz.blue[order_array[i]] + ');"></div>';
+        for(var i = 0; i < franz.rgb.alpha.length; i++) {
+			docStr += '<div class="color_box" style="background-color: rgb(' + franz.rgb.red[order_array[i]] + ', ' + franz.rgb.green[order_array[i]] + ',' + franz.rgb.blue[order_array[i]] + ');"></div>';
+        }
 
         document.getElementById("log_colors").innerHTML = docStr;
         if(typeof jQuery != "undefined") $("#container_bottom").fadeIn("slow");
