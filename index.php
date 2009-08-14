@@ -41,7 +41,7 @@
             });		
 			
             $("#try_these a").click(function() {
-				img_input.value = "awesome/" + this.innerHTML;
+				img_input.value = "awesome/" + $(this)[0].innerHTML;
 				return false;
 			}); 
 		
@@ -99,11 +99,11 @@
 			<input type="submit" class="img_submit" value="Go for it!">
 		</form>
 	    <p id="try_these"><strong>Try out:</strong>
-            <a href="#" title="lol.png">lol.png</a>, 
-            <a href="#" title="testjubs.jpg">testjubs.jpg</a>, 
-            <a href="#" title="stars.jpg">stars.jpg</a>, 
-            <a href="#" title="1600.jpg">1600.jpg</a>, 
-            <a href="#" title="fallout.jpg">fallout.jpg</a>
+            <a href="#" title="awesome/lol.png">lol.png</a>, 
+            <a href="#" title="awesome/testjubs.jpg">testjubs.jpg</a>, 
+            <a href="#" title="awesome/stars.jpg">stars.jpg</a>, 
+            <a href="#" title="awesome/1600.jpg">1600.jpg</a>, 
+            <a href="#" title="awesome/fallout.jpg">fallout.jpg</a>
         </p>
 		
     </div>
