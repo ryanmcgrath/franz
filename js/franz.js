@@ -4,7 +4,7 @@
  *  @Author Dominick Pham (http://twitter.com/enotionz)
  */
 
-/* Define some basic prototypes that we'll require later... */
+/* Define some basic prototypes that we'll require later.. */
 
 Array.prototype.swap = function(a, b) {
 	var tmp = this[a];
@@ -22,20 +22,16 @@ var franz = {
 	ctx: {},
     img: {},
 	
-	rgb: {
-		alpha: [],
-		red: [],
-		green: [],
-		blue: []
-	},
+	alpha: [],
+	red: [],
+	green: [],
+	blue: [],
 	
-	hsvl: {
-		hue: [],
-		satV: [],
-		value: [],
-		satL: [],
-		light: []
-	},	
+	hue: [],
+	satV: [],
+	value: [],
+	satL: [],
+	light: [],
 
 	origIndex: [],
 
@@ -79,10 +75,10 @@ var franz = {
 		var imageData = extra_ctx.getImageData(1, 1, 18, 18).data;
 
         for(var i = 0; i*4 < imageData.length; i++) {
-            franz.rgb.red[i] = imageData[i*4];
-            franz.rgb.green[i] = imageData[i*4 + 1];
-            franz.rgb.blue[i] = imageData[i*4 + 2];
-			franz.rgb.alpha[i] = imageData[i*4 + 3];
+            franz.red[i] = imageData[i*4];
+            franz.green[i] = imageData[i*4 + 1];
+            franz.blue[i] = imageData[i*4 + 2];
+			franz.alpha[i] = imageData[i*4 + 3];
         }
 
 		/* get hue sat val array */
@@ -98,13 +94,13 @@ var franz = {
 	RGBtoHSVHL: function() {
 		var min, max;
 		
-		for(var i = 0; i < franz.rgb.alpha.length; i++) {
-			franz.hsvl.value[i] = franz.getValHSV(franz.rgb.red[i],franz.rgb.green[i],franz.rgb.blue[i]);
-			franz.hsvl.satV[i] = franz.getSatHSV(franz.rgb.red[i],franz.rgb.green[i],franz.rgb.blue[i]);
-			franz.hsvl.hue[i] = franz.getHue(franz.rgb.red[i],franz.rgb.green[i],franz.rgb.blue[i]);
+		for(var i = 0; i < franz.alpha.length; i++) {
+			franz.value[i] = franz.getValHSV(franz.red[i],franz.green[i],franz.blue[i]);
+			franz.satV[i] = franz.getSatHSV(franz.red[i],franz.green[i],franz.blue[i]);
+			franz.hue[i] = franz.getHue(franz.red[i],franz.green[i],franz.blue[i]);
 			
-			franz.hsvl.satL[i] = franz.getSatHSL(franz.rgb.red[i],franz.rgb.green[i],franz.rgb.blue[i]);
-			franz.hsvl.light[i] = franz.getLightHSL(franz.rgb.red[i],franz.rgb.green[i],franz.rgb.blue[i]);
+			franz.satL[i] = franz.getSatHSL(franz.red[i],franz.green[i],franz.blue[i]);
+			franz.light[i] = franz.getLightHSL(franz.red[i],franz.green[i],franz.blue[i]);
 		}
 		
 		return false
@@ -168,8 +164,8 @@ var franz = {
 	displayColors: function(order_array) {
         var docStr = "";
 		
-        for(var i = 0; i < franz.rgb.alpha.length; i++) {
-			docStr += '<div class="color_box" style="background-color: rgb(' + franz.rgb.red[order_array[i]] + ', ' + franz.rgb.green[order_array[i]] + ',' + franz.rgb.blue[order_array[i]] + ');"></div>';
+        for(var i = 0; i < franz.alpha.length; i++) {
+			docStr += '<div class="color_box" style="background-color: rgb(' + franz.red[order_array[i]] + ', ' + franz.green[order_array[i]] + ',' + franz.blue[order_array[i]] + ');"></div>';
         }
 
         document.getElementById("log_colors").innerHTML = docStr;
@@ -182,7 +178,7 @@ var franz = {
 	resetIndex: function() {
 		/* keep track of original index so we don't have to revert
 		back to RGB just to display output */
-		for (var i=0; i < franz.rgb.alpha.length; i++) {
+		for (var i=0; i < franz.alpha.length; i++) {
             franz.origIndex[i] = i;
 		}
 		return false;
@@ -195,31 +191,31 @@ var franz = {
 	},
 	
     displayHue: function() {
-		franz.indexSort(franz.clone(franz.hsvl.hue), 0, franz.rgb.alpha.length);
+		franz.indexSort(franz.clone(franz.hue), 0, franz.alpha.length);
 		franz.displayColors(franz.origIndex);
 		return false;
 	},
 	
     displaySat: function() {
-		franz.indexSort(franz.clone(franz.hsvl.satV), 0, franz.rgb.alpha.length);	
+		franz.indexSort(franz.clone(franz.satV), 0, franz.alpha.length);	
 		franz.displayColors(franz.origIndex);
 		return false;
 	},
 	
     displayVal: function() {
-		franz.indexSort(franz.clone(franz.hsvl.value), 0, franz.rgb.alpha.length);	
+		franz.indexSort(franz.clone(franz.value), 0, franz.alpha.length);	
 		franz.displayColors(franz.origIndex);
 		return false;
 	},
 	
     displaySatL: function() {
-		franz.indexSort(franz.clone(franz.hsvl.satL), 0, franz.rgb.alpha.length);	
+		franz.indexSort(franz.clone(franz.satL), 0, franz.alpha.length);	
 		franz.displayColors(franz.origIndex);
 		return false;
 	},
 	
     displayLight: function() {
-		franz.indexSort(franz.clone(franz.hsvl.light), 0, franz.rgb.alpha.length);	
+		franz.indexSort(franz.clone(franz.light), 0, franz.alpha.length);	
 		franz.displayColors(franz.origIndex);
 		return false;
 	},
