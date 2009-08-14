@@ -117,8 +117,8 @@ var franz = {
 		max = Math.max(red,Math.max(green,blue));
 		delta = max - min;
 		
-        if (max == 0)
-			return -1;
+        if (max == min)
+			return 0;
 		else {
 			if (red == max)
 				hue = (green - blue) / delta;	//between yellow & magenta
@@ -200,78 +200,51 @@ var franz = {
 	},
 	
     displayHue: function() {
-		franz.bubbleSort(franz.clone(franz.hsvl.hue), 0, franz.rgb.alpha.length);
+		franz.indexSort(franz.clone(franz.hsvl.hue), 0, franz.rgb.alpha.length);
 		franz.displayColors(franz.origIndex);
 		return false;
 	},
 	
     displaySat: function() {
-		franz.bubbleSort(franz.clone(franz.hsvl.satV), 0, franz.rgb.alpha.length);	
+		franz.indexSort(franz.clone(franz.hsvl.satV), 0, franz.rgb.alpha.length);	
 		franz.displayColors(franz.origIndex);
 		return false;
 	},
 	
     displayVal: function() {
-		franz.bubbleSort(franz.clone(franz.hsvl.value), 0, franz.rgb.alpha.length);	
+		franz.indexSort(franz.clone(franz.hsvl.value), 0, franz.rgb.alpha.length);	
 		franz.displayColors(franz.origIndex);
 		return false;
 	},
 	
     displaySatL: function() {
-		franz.bubbleSort(franz.clone(franz.hsvl.satL), 0, franz.rgb.alpha.length);	
+		franz.indexSort(franz.clone(franz.hsvl.satL), 0, franz.rgb.alpha.length);	
 		franz.displayColors(franz.origIndex);
 		return false;
 	},
 	
     displayLight: function() {
-		franz.bubbleSort(franz.clone(franz.hsvl.light), 0, franz.rgb.alpha.length);	
+		franz.indexSort(franz.clone(franz.hsvl.light), 0, franz.rgb.alpha.length);	
 		franz.displayColors(franz.origIndex);
 		return false;
 	},
 	
-	/* bubble sort */
-	bubbleSort: function(inputArray, start, end) {
+	/* bubble sort floats around and pops in your face */
+	indexSort: function(inputArray, start, end) {
 		franz.resetIndex();
 		for (var i = start; i < end;  i++) {
-			for (var j = start; j < end; j++) {
+			for (var j = end-1; j >= start; j--) {
 				var diff = inputArray[j] - inputArray[i]
+				console.log("j=" + inputArray[j] + "   i=" + inputArray[i] + "  ->   " + diff);
 				if (diff > 0) {
+					console.log("swapped");
 					inputArray.swap(i,j+1);
 					franz.origIndex.swap(i,j+1);
 				}
+				if (j == end-20) break;
 			}
+			if  (i == 20) break;
 		}
-	},
-	/* quicksort algorithm that also swaps an index array */
-	sort_Partition: function(array, begin, end, pivot) {
-		var piv=array[pivot];
-		array.swap(pivot, end-1);
-		franz.origIndex.swap(pivot, end-1);
-		var store=begin;
-		var ix;
-		for(ix=begin; ix<end-1; ++ix) {
-			if(array[ix]<=piv) {
-				array.swap(store, ix);
-				franz.origIndex.swap(store, ix);
-				++store;
-			}
-		}
-		array.swap(end-1, store);
-		franz.origIndex.swap(end-1, store);
-
-		return store;
-	},
-	
-	qsort: function(array, begin, end) {
-		if(end-1>begin) {
-			var pivot=begin+Math.floor(Math.random()*(end-begin));
-
-			pivot=franz.sort_Partition(array, begin, end, pivot);
-
-			franz.qsort(array, begin, pivot);
-			franz.qsort(array, pivot+1, end);
-		}
-		return false;
 	}
 	
 }

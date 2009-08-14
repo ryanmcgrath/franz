@@ -41,7 +41,7 @@
             });		
 			
             $("#try_these a").click(function() {
-				img_input.value = this.innerHTML;
+				img_input.value = "awesome/" + this.innerHTML;
 				return false;
 			}); 
 		
@@ -95,7 +95,7 @@
             <input type="submit" class="img_submit" value="Upload and be awesome">
         </form>
         <form method="post" action="#" id="franz_form">
-			<input type="text" id="img_input" value="lol.png">
+			<input type="text" id="img_input" value="awesome/lol.png">
 			<input type="submit" class="img_submit" value="Go for it!">
 		</form>
 	    <p id="try_these"><strong>Try out:</strong>
