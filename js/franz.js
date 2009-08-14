@@ -100,76 +100,71 @@ var franz = {
 		return false
 	},
 
-	getHue: function(red,green,blue) {
-		var min, max, delta, hue;
+	getHue: function(red, green, blue) {
+		var min = Math.min(red, Math.min(green, blue)),
+            max = Math.max(red, Math.max(green, blue)), 
+            delta = max - min, 
+            hue;
 		
-		min = Math.min(red,Math.min(green,blue));
-		max = Math.max(red,Math.max(green,blue));
-		delta = max - min;
-		
-        if (max == 0)
+        if(max == 0)
 			return -1;
 		else {
-			if (red == max)
+			if(red == max)
 				hue = (green - blue) / delta;	//between yellow & magenta
-			else if (green == max)
+			else if(green == max)
 				hue = 2 + (blue - red) / delta;	//between cyan & yellow
 			else
 				hue = 4 + (red - green) / delta;	//between magenta & cyan
 			
 			// hue degrees
 			hue = hue * 60;
-			if (hue < 0) hue += 360;
+			if(hue < 0) hue += 360;
 		}
 		
 		return hue;
 	},
 	
     getSatHSV: function(red, green, blue) {
-		var min, max, delta, sat;
-		
-		min = Math.min(red,Math.min(green,blue));
-		max = Math.max(red,Math.max(green,blue));
-		delta = max - min;
-		sat = delta / max;
+		var min = Math.min(red, Math.min(green, blue)), 
+            max = Math.max(red, Math.max(green, blue)),
+            delta = max - min, 
+            sat = delta / max;
 		
 		return sat;
 	},
 	
-	getValHSV: function(red, green, blue) { return Math.max(red,Math.max(green,blue)); },
+	getValHSV: function(red, green, blue) { return Math.max(red, Math.max(green,blue)); },
 	
 	getSatHSL: function(red, green, blue) {
-		var min, max, sat;
-		var lightness = franz.getLightHSL();
+		var min = Math.min(red, Math.min(green, blue)), 
+            max = Math.max(red, Math.max(green, blue)), 
+		    lightness = franz.getLightHSL(),
+            sat;
 		
-		min = Math.min(red,Math.min(green,blue));
-		max = Math.max(red,Math.max(green,blue));
+		if(min == max) return 0;
 		
-		if (min == max)	return 0;
-		
-		if (lightness < 1/2)	sat = (max-min)/(max+min);
-		else	sat = (max-min)/(2 - (max+min));
+		if(lightness < 1/2)	sat = (max-min)/(max+min);
+		else sat = (max - min) / (2 - (max + min));
 		
 		return sat;		
 	},
 	
 	getLightHSL: function(red, green, blue) {
-		var min, max;
-		min = Math.min(red,Math.min(green,blue));
-		max = Math.max(red,Math.max(green,blue));
-		return 1/2*(min+max);
+		var min = Math.min(red, Math.min(green, blue)), 
+            max = Math.max(red, Math.max(green, blue));
+		return 0.5 * (min + max);
 	},
 	
-	/* routines to display color swatches */
 	displayColors: function(order_array) {
-		var docString = "";
+        var docStr = "";
 		
-		for(var i = 0; i < franz.alpha.length; i++) {
-			docString += '<div class="color_box" style="background-color: rgb(' + franz.red[order_array[i]] + ', ' +  franz.green[order_array[i]] + ',' + franz.blue[order_array[i]] + ');"></div>';
+        for(var i = 0; i < franz.alpha.length; i++) {
+			docStr += '<div class="color_box" style="background-color: rgb(' + franz.red[order_array[i]] + ', ' + franz.green[order_array[i]] + ',' + franz.blue[order_array[i]] + ');"></div>';
 		}
-        
-        document.getElementById("log_colors").innerHTML = docString;
-        $("#container_bottom").fadeIn("slow");
+
+        document.getElementById("log_colors").innerHTML = docStr;
+        if(typeof jQuery != "undefined") $("#container_bottom").fadeIn("slow");
+        else document.getElementById("container_bottom").style.display = "block";
 		
 		return false;
 	},
