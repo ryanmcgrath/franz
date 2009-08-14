@@ -220,21 +220,44 @@ var franz = {
 		return false;
 	},
 	
+	
+	/* calculates density of array data given interval and step size - both controlling data error
+		step size should ideally be < interval. Returns array with (# of intervals) as size */
+	getDensity: function(inputArray, step, interval, max) {
+		var size = max/step;
+		var densityArray = new Array(size);
+		
+		for (var i=0; i < size; i++) {
+			var count = 0;
+			
+			for (var j=0; j < inputArray.length; j++) {
+				// if entry is within current interval
+				if ((inputArray[j] > i*step) && (inputArray[j] < i*step + interval)){
+					count++;
+				}
+			}
+			console.log("frequency of values between " + i*step + " and " + (i*step + interval) + " = " + count);
+			densityArray[i] = count;
+		}
+		
+		return densityArray;
+	},
+	
 	/* bubble sort floats around and pops in your face */
 	indexSort: function(inputArray, start, end) {
 		franz.resetIndex();
 		for (var i = start; i < end;  i++) {
 			for (var j = end-1; j >= start; j--) {
 				var diff = inputArray[j] - inputArray[i]
-				console.log("j=" + inputArray[j] + "   i=" + inputArray[i] + "  ->   " + diff);
+				//console.log("j=" + inputArray[j] + "   i=" + inputArray[i] + "  ->   " + diff);
 				if (diff > 0) {
-					console.log("swapped");
+					//console.log("swapped");
 					inputArray.swap(i,j+1);
 					franz.origIndex.swap(i,j+1);
 				}
-				if (j == end-20) break;
+				//if (j == end-20) break;
 			}
-			if  (i == 20) break;
+			//if  (i == 20) break;
 		}
 	}
 	
