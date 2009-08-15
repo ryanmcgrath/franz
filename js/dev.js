@@ -165,7 +165,7 @@ var franz = {
         var docStr = "";
 		
         for(var i = 0; i < franz.alpha.length; i++) {
-			docStr += '<div class="color_box" style="background-color: rgb(' + franz.red[order_array[i]] + ', ' + franz.green[order_array[i]] + ',' + franz.blue[order_array[i]] + ');"></div>';
+			docStr += '<div class="color_boxd" style="background-color: rgb(' + franz.red[order_array[i]] + ', ' + franz.green[order_array[i]] + ',' + franz.blue[order_array[i]] + ');"></div>';
         }
 
         document.getElementById("log_colors").innerHTML = docStr;
@@ -226,15 +226,11 @@ var franz = {
 		for (var i = start; i < end;  i++) {
 			for (var j = end-1; j >= start; j--) {
 				var diff = inputArray[j] - inputArray[i]
-				console.log("j=" + inputArray[j] + "   i=" + inputArray[i] + "  ->   " + diff);
 				if (diff > 0) {
-					console.log("swapped");
 					inputArray.swap(i,j+1);
 					franz.origIndex.swap(i,j+1);
 				}
-				if (j == end-20) break;
 			}
-			if  (i == 20) break;
 		}
 	}
 	
