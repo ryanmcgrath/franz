@@ -75,6 +75,11 @@
 				return false;
 			});
 
+            $(".color_boxd").live("click", function() {
+                // It's 4AM, and I'm tired. I'm not building a damn regular expression, so yeah, we'll multiple .replace() ;P
+                alert("This hex color: " + franz.RGBtoHex($(this)[0].style.backgroundColor.replace(")", "").replace("rgb(", "").replace(" ", "").split(",")));
+            });
+        
         });
     </script>
 </head>

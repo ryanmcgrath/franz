@@ -232,6 +232,18 @@ var franz = {
 				}
 			}
 		}
-	}
+	},
 	
+    RGBtoHex: function(rgb) {
+        var hex = [];
+
+        if(rgb[3] == 0) return 'transparent';
+        
+        for(var i = 0; i < 3; i++) {
+            var bit = (rgb[i] - 0).toString(16);
+            hex.push(bit.length == 1 ? ('0' + bit) : bit);
+        }
+        
+        return '#' + hex.join('');
+    }
 }
