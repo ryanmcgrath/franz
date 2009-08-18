@@ -71,8 +71,8 @@ var franz = {
         var hidden_canvas = document.getElementById("lol_hidden"),
             extra_ctx = hidden_canvas.getContext('2d');
         
-        extra_ctx.drawImage(franz.img, 0, 0, 19, 19);
-		var imageData = extra_ctx.getImageData(1, 1, 18, 18).data;
+        extra_ctx.drawImage(franz.img, 0, 0, 33, 33);
+		var imageData = extra_ctx.getImageData(1, 1, 32, 32).data;
 
         for(var i = 0; i*4 < imageData.length; i++) {
             franz.red[i] = imageData[i*4];
@@ -165,7 +165,7 @@ var franz = {
         var docStr = "";
 		
         for(var i = 0; i < franz.alpha.length; i++) {
-			docStr += '<div class="color_box" style="background-color: rgb(' + franz.red[order_array[i]] + ', ' + franz.green[order_array[i]] + ',' + franz.blue[order_array[i]] + ');"></div>';
+			docStr += '<div class="color_boxd" style="background-color: rgb(' + franz.red[order_array[i]] + ', ' + franz.green[order_array[i]] + ',' + franz.blue[order_array[i]] + ');"></div>';
         }
 
         document.getElementById("log_colors").innerHTML = docStr;
@@ -220,44 +220,17 @@ var franz = {
 		return false;
 	},
 	
-	
-	/* calculates density of array data given interval and step size - both controlling data error
-		step size should ideally be < interval. Returns array with (# of intervals) as size */
-	getDensity: function(inputArray, step, interval, max) {
-		var size = max/step;
-		var densityArray = new Array(size);
-		
-		for (var i=0; i < size; i++) {
-			var count = 0;
-			
-			for (var j=0; j < inputArray.length; j++) {
-				// if entry is within current interval
-				if ((inputArray[j] > i*step) && (inputArray[j] < i*step + interval)){
-					count++;
-				}
-			}
-			console.log("frequency of values between " + i*step + " and " + (i*step + interval) + " = " + count);
-			densityArray[i] = count;
-		}
-		
-		return densityArray;
-	},
-	
 	/* bubble sort floats around and pops in your face */
 	indexSort: function(inputArray, start, end) {
 		franz.resetIndex();
 		for (var i = start; i < end;  i++) {
 			for (var j = end-1; j >= start; j--) {
 				var diff = inputArray[j] - inputArray[i]
-				//console.log("j=" + inputArray[j] + "   i=" + inputArray[i] + "  ->   " + diff);
 				if (diff > 0) {
-					//console.log("swapped");
 					inputArray.swap(i,j+1);
 					franz.origIndex.swap(i,j+1);
 				}
-				//if (j == end-20) break;
 			}
-			//if  (i == 20) break;
 		}
 	}
 	

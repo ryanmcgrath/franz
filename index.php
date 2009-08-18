@@ -86,7 +86,7 @@
     <a href="#" title="Upload an image" id="upload_button">Upload an image</a>
     <div id="lol_container">
 	    <canvas id="lol" width="100" height="100"></canvas>
-        <canvas id="lol_hidden" width="19" height="19"></canvas>
+        <canvas id="lol_hidden" width="33" height="33"></canvas>
     </div>
 
 	<div id="interface">
