@@ -218,6 +218,28 @@ var franz = {
 		franz.indexSort(franz.clone(franz.light), 0, franz.alpha.length);	
 		franz.displayColors(franz.origIndex);
 		return false;
+	},	
+	
+	/* calculates density of array data given interval and step size - both controlling data error
+		step size should ideally be < interval. Returns array with (# of intervals) as size */
+	getDensity: function(inputArray, step, interval, max) {
+		var size = max/step;
+		var densityArray = new Array(size);
+		
+		for (var i=0; i < size; i++) {
+			var count = 0;
+			
+			for (var j=0; j < inputArray.length; j++) {
+				// if entry is within current interval
+				if ((inputArray[j] > i*step) && (inputArray[j] < i*step + interval)){
+					count++;
+				}
+			}
+			console.log("frequency of values between " + i*step + " and " + (i*step + interval) + " = " + count);
+			densityArray[i] = count;
+		}
+		
+		return densityArray;
 	},
 	
 	/* bubble sort floats around and pops in your face */
