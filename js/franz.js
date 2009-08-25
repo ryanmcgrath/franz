@@ -169,7 +169,10 @@ var franz = {
         }
 
         document.getElementById("log_colors").innerHTML = docStr;
-        if(typeof jQuery != "undefined") $("#container_bottom").fadeIn("slow");
+        if(typeof jQuery != "undefined") {
+            $("#container_bottom").fadeIn("fast");
+            setTimeout(function() { $("#testLayout").fadeIn("slow"); }, 500);
+        }
         else document.getElementById("container_bottom").style.display = "block";
 		
 		return false;

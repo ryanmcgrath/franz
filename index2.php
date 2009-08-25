@@ -8,7 +8,8 @@
 	<script type="text/javascript" src="js/franz.js"></script>
     <script type="text/javascript" src="http://www.google-analytics.com/ga.js"></script>
     <script type="text/javascript">
-        var img_input;
+        var img_input,
+            layoutMods = $("#layoutMods");
 
         /* Oh god a global function wrrrryyyy */
         function lol() {
@@ -75,15 +76,40 @@
 				return false;
 			});
 
-            $(".color_boxd").live("click", function() {
-                // It's 4AM, and I'm tired. I'm not building a damn regular expression, so yeah, we'll multiple .replace() ;P
+            $(".color_boxd").live("mousedown", function(e) {
+                var coords = {x: e.pageX, y: e.pageY};
+                layoutMods.fadeIn("slow");
+                //layoutMods.css({"top": coords.x + "px", "left": coords.y + "px"});
+                /*
+                // It's 4AM, and I'm tired. I'm not building a damned regular expression, so yeah, we'll multiple .replace() ;P
                 alert("This hex color: " + franz.RGBtoHex($(this)[0].style.backgroundColor.replace(")", "").replace("rgb(", "").replace(" ", "").split(",")));
+                */
             });
         
         });
     </script>
 </head>
 <body>
+
+<div id="layoutMods">
+    <a href="#" title="Set as background color">Main Background</a>
+    <a href="#" title="Set as Header BG">Header Background</a>
+    <a href="#" title="Set as Content BG">Content Background</a>
+</div>
+
+<div id="testLayout">
+    <div id="testBanner">
+        This is an example layout
+    </div>
+    <div id="testContent">
+        <p>
+            This is an example layout to test colors with.
+        </p>
+        <p>
+            Click on a color to set it for one of these layout sections!
+        </p>
+    </div>
+</div>
 
 <h1>Franz - client side color swatches</h1>
 
@@ -113,12 +139,6 @@
 		
     </div>
 	
-	<!-- might log colors later on
-	<ul id="logHSV">
-		<li><p id="logHue">Hue: </p></li>
-		<li><p id="logSat">Sat: </p></li>
-		<li><p id="logVal">Val: </p></li>
-	</ul> -->
 </div>
 
 <div id="options">
