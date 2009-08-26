@@ -8,8 +8,14 @@
 	<script type="text/javascript" src="js/franz.js"></script>
     <script type="text/javascript" src="http://www.google-analytics.com/ga.js"></script>
     <script type="text/javascript">
-        var img_input,
-            layoutMods = $("#layoutMods");
+        var img_input, 
+            layoutMods, 
+            selectedColor,
+            previewMainBG,
+            previewBannerBG,
+            previewContentBG,
+            previewSidebarBG,
+            previewFooterBG;
 
         /* Oh god a global function wrrrryyyy */
         function lol() {
@@ -19,6 +25,12 @@
         }
 
         $(document).ready(function() {
+            layoutMods = $("#layoutMods");
+            previewMainBG = $("#testLayout");
+            previewBannerBG = $("#testBanner");
+            previewContentBG = $("#testContent");
+            previewSidebarBG = $("#testSidebar");
+            previewFooterBG = $("#testFooter");
             franz.init("lol");
 
             img_input = document.getElementById("img_input");
@@ -76,25 +88,50 @@
 				return false;
 			});
 
-            $(".color_boxd").live("mousedown", function(e) {
-                var coords = {x: e.pageX, y: e.pageY};
-                layoutMods.fadeIn("slow");
-                //layoutMods.css({"top": coords.x + "px", "left": coords.y + "px"});
-                /*
-                // It's 4AM, and I'm tired. I'm not building a damned regular expression, so yeah, we'll multiple .replace() ;P
-                alert("This hex color: " + franz.RGBtoHex($(this)[0].style.backgroundColor.replace(")", "").replace("rgb(", "").replace(" ", "").split(",")));
-                */
+            $("#setMainBG").click(function() {
+                previewMainBG.css({"background-color": selectedColor});
+                return false;
             });
-        
+
+            $("#setHeaderBG").click(function() {
+                previewBannerBG.css({"background-color": selectedColor});
+                return false;
+            });
+
+            $("#setContentBG").click(function() {
+                previewContentBG.css({"background-color": selectedColor});
+                return false;
+            });
+
+            $("#setFooterBG").click(function() {
+                previewFooterBG.css({"background-color": selectedColor});
+                return false;
+            });
+
+            $("#setSidebarBG").click(function() {
+                previewSidebarBG.css({"background-color": selectedColor});
+                return false;
+            });
+
+            $(".color_boxd").live("mousedown", function(e) {
+                // Yes, this function is horribly un-optimized. It's 4AM, we'll clean it up later. ;P
+                selectedColor = franz.RGBtoHex($(this)[0].style.backgroundColor.replace(")", "").replace("rgb(", "").replace(" ", "").split(","));
+                var coords = {x: e.pageX, y: e.pageY};
+                layoutMods.hide();
+                layoutMods.css({"top": coords.y + "px", "left": coords.x + "px"}); 
+                layoutMods.fadeIn("slow");
+            });
         });
     </script>
 </head>
 <body>
 
 <div id="layoutMods">
-    <a href="#" title="Set as background color">Main Background</a>
-    <a href="#" title="Set as Header BG">Header Background</a>
-    <a href="#" title="Set as Content BG">Content Background</a>
+    <a href="#" id="setMainBG" title="Set as background color">Set as Main Background</a>
+    <a href="#" id="setHeaderBG" title="Set as Header BG">Set as Header Background</a>
+    <a href="#" id="setContentBG" title="Set as Content BG">Set as Content Background</a>
+    <a href="#" id="setSidebarBG" title="Set as Sidebar BG">Set as Sidebar Background</a>
+    <a href="#" id="setFooterBG" title="Set as Footer BG">Set as Footer Background</a>
 </div>
 
 <div id="testLayout">
@@ -108,6 +145,12 @@
         <p>
             Click on a color to set it for one of these layout sections!
         </p>
+    </div>
+    <div id="testSidebar">
+        Sidebar
+    </div>
+    <div id="testFooter">
+        &copy; lol enterprises
     </div>
 </div>
 
