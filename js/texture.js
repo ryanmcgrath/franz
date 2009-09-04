@@ -15,7 +15,7 @@ var texture = {
      *  @Param: baseImage - base image to use (generally a semi-transparent PNG)
      *  @Param: colorArray - array of colors to use in the texture (Right now, this only accepts two colors, primary and secondary)
     */
-    draw: function(drawingCanvas, baseImage, colorArray) {
+    draw: function(drawingCanvas, baseImage, colorArray, callbackfn) {
         texture.canvas = document.getElementById(drawingCanvas);
         texture.ctx = texture.canvas.getContext('2d');
 
@@ -25,7 +25,10 @@ var texture = {
             texture.ctx.fillStyle = colorArray[0];
             texture.ctx.fillRect(0, 0, 50, 50);
             texture.ctx.drawImage(img, 0, 0, 50, 50);
-		}
+		    callbackfn();
+        }
 		img.src = baseImage;
-    }
+    },
+
+    getBase64: function() { return document.getElementById("lol_texture").toDataURL("image/png"); }
 }

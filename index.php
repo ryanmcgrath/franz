@@ -7,6 +7,7 @@
     <script type="text/javascript" src="http://images.webs.com/static/global/js/jquery/jquery-1.3.2.min.js"></script>
 	<script type="text/javascript" src="js/franz.js"></script>
     <script type="text/javascript" src="http://www.google-analytics.com/ga.js"></script>
+    <script type="text/javascript" src="js/texture.js"></script>
     <script type="text/javascript">
         var img_input, 
             layoutMods, 
@@ -93,6 +94,14 @@
                 return false;
             });
 
+            $("#setTextureBG").click(function() {
+                texture.draw('lol_texture', 'img/test1.png', [selectedColor], function() {
+                    newBase64String = texture.getBase64();
+                    $("#testLayout").css({'background': 'transparent url(' + newBase64String + ')'});
+                });
+                return false;
+            });
+
             $("#setHeaderBG").click(function() {
                 previewBannerBG.css({"background-color": selectedColor});
                 return false;
@@ -132,6 +141,7 @@
     <a href="#" id="setContentBG" title="Set as Content BG">Set as Content Background</a>
     <a href="#" id="setSidebarBG" title="Set as Sidebar BG">Set as Sidebar Background</a>
     <a href="#" id="setFooterBG" title="Set as Footer BG">Set as Footer Background</a>
+    <a href="#" id="setTextureBG" title="Set as Main BG w/ Texture">Set as Main BG w/ Texture</a>
 </div>
 
 <div id="testLayout">
@@ -181,8 +191,9 @@
         </p>
 		
     </div>
-	
 </div>
+
+<canvas id="lol_texture" width="50" height="50" style="visibility: hidden; position: absolute; top: 0px; left: 0px;"></canvas>
 
 <div id="options">
 	<p id="hsv">
