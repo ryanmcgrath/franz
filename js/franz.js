@@ -6,11 +6,13 @@
 
 /* Define some basic prototypes that we'll require later.. */
 
-Array.prototype.swap = function(a, b) {
-	var tmp = this[a];
-	this[a] = this[b];
-	this[b] = tmp;
-    return true; /* For the sake of being complete */
+if(!Array.prototype.swap) {
+    Array.prototype.swap = function(a, b) {
+	    var tmp = this[a];
+	    this[a] = this[b];
+	    this[b] = tmp;
+        return true; /* For the sake of being complete */
+    }
 }
 
 /* allows numeric sorting for built in js sort */
@@ -42,19 +44,21 @@ var franz = {
 	},
 
     clone: function(obj) {
-        /* Recursively iterate through objects and clone them (Don't even try to put this on the Object prototype (recursion fail)) */
-        var returnObj = (obj instanceof Array) ? [] : {};
+        if(typeof obj !== "undefined") {
+            /* Recursively iterate through objects and clone them (Don't even try to put this on the Object prototype (recursion fail)) */
+            var returnObj = (obj instanceof Array) ? [] : {};
     
-        for(i in obj) {
-            if(i == 'clone') continue;
-            if(obj[i] != null && typeof obj[i] == "object") {
-                returnObj[i] = franz.clone(obj[i]);
-            } else {
-                returnObj[i] = obj[i];
+            for(i in obj) {
+                if(i == 'clone') continue;
+                if(obj[i] != null && typeof obj[i] == "object") {
+                    returnObj[i] = franz.clone(obj[i]);
+                } else {
+                    returnObj[i] = obj[i];
+                }
             }
-        }
 
-        return returnObj;
+            return returnObj;
+        }
     },
 
 	loadImg: function(img_src) {
@@ -169,7 +173,7 @@ var franz = {
         }
 
         document.getElementById("log_colors").innerHTML = docStr;
-        if(typeof jQuery != "undefined") {
+        if(typeof jQuery !== "undefined") {
             $("#container_bottom").fadeIn("fast");
             setTimeout(function() { $("#testLayout").fadeIn("slow"); }, 500);
         }
