@@ -4,8 +4,6 @@
  *  @Author Dominick Pham (http://twitter.com/enotionz)
  */
 
-/* Define some basic prototypes that we'll require later.. */
-
 if(!Array.prototype.swap) {
     Array.prototype.swap = function(a, b) {
 	    var tmp = this[a];
@@ -15,15 +13,60 @@ if(!Array.prototype.swap) {
     }
 }
 
-/* allows numeric sorting for built in js sort */
-function sortNumber(a,b) { return a - b;}
+var franz = function(franzProps) {
+	/* 	new franz({
+			canvas: "canvas_id",
+			src: "image_src",
+			callback: fn() { ... }
+		});
+		
+		Stores a reference to our canvas and the canvas context for future use. Accepts
+		an optional callback function to tie this into further methods.
+		
+		Note: Since there's no way to get the type of <canvas> support we need in Internet Explorer,
+		we actually branch the codepath here - IE gets a small flash applet that handles pulling color data out. We additionally serve
+		this if, for some reason, <canvas> support is lacking or broken in newer browser (or Firefox 2, etc).
+		
+		The data is still parsed via JS by using externalInterface() callbacks into the Flash applet, so it's safe to
+		assume that anything occuring after getColors() is back in global-browser-use land.
+	*/
+	this.canvas_id = franzProps.canvas;
+	if(typeof document.getElementById(franzProps.canvas).getContext === "function") {
+		/* Canvas is natively supported, go down the normal path... */
+		this.canvas = document.getElementById(franzProps.canvas);
+		this.ctx = this.canvas.getContext('2d');
+		if(typeof franzProps.callback !== "undefined" && typeof franzProps.callback === "function") franzProps.callback();
+	} else {
+		/* 	We're dealing with something that belongs in an old folks home; throw in the life support. (Embed Flash junk) :(
+			Inject SWFObject so we can deal with Flash embedding in a sane manner...
+		*/
+		if(typeof swfobject === "undefined") {
+			var newScript = document.createElement("script");
+			newScript.type = "text/javascript";
+			newScript.src = "/js/swfobject.js";
+			document.body.appendChild(newScript);
 
-/* Franz - this is where the magic happens, pay close attention. ;) */
-var franz = {
-	canvas: {},
-	ctx: {},
-    img: {},
-	
+			if(typeof franzProps.callback !== "undefined" && typeof franzProps.callback === "function") {
+				// Catch the callback function for IE...
+				newScript.onreadystatechange = function() {
+					if(newScript.readyState == "loaded" || newScript.readyState == "complete") franzProps.callback();
+					return false;
+				}
+
+				// Catch all other misguided browsers, just in case (Really old versions of Safari that don't have good <canvas> support will fail totally, but that's far too much to care about)
+				newScript.onload = function() {
+					franzProps.callback();
+					return false;
+				}
+			}
+			return false;
+		}
+		// If swfobject was already appended once, just catch the callback and run
+		if(typeof franzProps.callback !== "undefined" && typeof franzProps.callback === "function") franzProps.callback();
+	}
+}
+
+franz.prototype = {	
 	alpha: [],
 	red: [],
 	green: [],
@@ -36,60 +79,38 @@ var franz = {
 	light: [],
 
 	origIndex: [],
-
-	init: function(canvas_id) {
-		franz.canvas = document.getElementById(canvas_id);
-		franz.ctx = franz.canvas.getContext('2d');
-		return false;
-	},
-
-    clone: function(obj) {
-        if(typeof obj !== "undefined") {
-            /* Recursively iterate through objects and clone them (Don't even try to put this on the Object prototype (recursion fail)) */
-            var returnObj = (obj instanceof Array) ? [] : {};
-    
-            for(i in obj) {
-                if(i == 'clone') continue;
-                if(obj[i] != null && typeof obj[i] == "object") {
-                    returnObj[i] = franz.clone(obj[i]);
-                } else {
-                    returnObj[i] = obj[i];
-                }
-            }
-
-            return returnObj;
-        }
-    },
-
+	
 	loadImg: function(img_src) {
-		franz.img = new Image();
-		franz.img.onload = function() {
-            franz.ctx.drawImage(franz.img, 0, 0, 100, 100);
-			setTimeout(function() { franz.getColors(); }, 100);
+		/* If you're looking for the non-<canvas> portion of this, check the associated Flash files. */
+		var working = this;
+        working.img = new Image();
+		working.img.onload = function() {
+            working.ctx.drawImage(working.img, 0, 0, 100, 100);
+			setTimeout(function() { working.getColors(); }, 100);
 		}
-		franz.img.src = img_src;
-		return false;
+		working.img.src = img_src;
 	},
 
 	getColors: function() {
+		/* If you're looking for the non-<canvas> portion of this, check the associated Flash files. */
         var hidden_canvas = document.getElementById("lol_hidden"),
             extra_ctx = hidden_canvas.getContext('2d');
         
-        extra_ctx.drawImage(franz.img, 0, 0, 33, 33);
+        extra_ctx.drawImage(this.img, 0, 0, 33, 33);
 		var imageData = extra_ctx.getImageData(1, 1, 32, 32).data;
 
         for(var i = 0; i*4 < imageData.length; i++) {
-            franz.red[i] = imageData[i*4];
-            franz.green[i] = imageData[i*4 + 1];
-            franz.blue[i] = imageData[i*4 + 2];
-			franz.alpha[i] = imageData[i*4 + 3];
+            this.red[i] = imageData[i*4];
+            this.green[i] = imageData[i*4 + 1];
+            this.blue[i] = imageData[i*4 + 2];
+			this.alpha[i] = imageData[i*4 + 3];
         }
 
 		/* get hue sat val array */
-		franz.RGBtoHSVHL();
+		this.RGBtoHSVHL();
 
 		/* show original image */
-		franz.displayImg();
+		this.displayImg();
 		
 		return false;
 	},
@@ -98,13 +119,13 @@ var franz = {
 	RGBtoHSVHL: function() {
 		var min, max;
 		
-		for(var i = 0; i < franz.alpha.length; i++) {
-			franz.value[i] = franz.getValHSV(franz.red[i],franz.green[i],franz.blue[i]);
-			franz.satV[i] = franz.getSatHSV(franz.red[i],franz.green[i],franz.blue[i]);
-			franz.hue[i] = franz.getHue(franz.red[i],franz.green[i],franz.blue[i]);
+		for(var i = 0; i < this.alpha.length; i++) {
+			this.value[i] = this.getValHSV(this.red[i], this.green[i], this.blue[i]);
+			this.satV[i] = this.getSatHSV(this.red[i], this.green[i], this.blue[i]);
+			this.hue[i] = this.getHue(this.red[i], this.green[i], this.blue[i]);
 			
-			franz.satL[i] = franz.getSatHSL(franz.red[i],franz.green[i],franz.blue[i]);
-			franz.light[i] = franz.getLightHSL(franz.red[i],franz.green[i],franz.blue[i]);
+			this.satL[i] = this.getSatHSL(this.red[i], this.green[i], this.blue[i]);
+			this.light[i] = this.getLightHSL(this.red[i], this.green[i], this.blue[i]);
 		}
 		
 		return false
@@ -148,7 +169,7 @@ var franz = {
 	getSatHSL: function(red, green, blue) {
 		var min = Math.min(red, Math.min(green, blue)), 
             max = Math.max(red, Math.max(green, blue)), 
-		    lightness = franz.getLightHSL(),
+		    lightness = this.getLightHSL(),
             sat;
 		
 		if(min == max) return 0;
@@ -166,10 +187,11 @@ var franz = {
 	},
 	
 	displayColors: function(order_array) {
+		console.log("displaying colors");
         var docStr = "";
 		
-        for(var i = 0; i < franz.alpha.length; i++) {
-			docStr += '<div class="color_boxd" style="background-color: rgb(' + franz.red[order_array[i]] + ', ' + franz.green[order_array[i]] + ',' + franz.blue[order_array[i]] + ');"></div>';
+        for(var i = 0; i < this.alpha.length; i++) {
+			docStr += '<div class="color_boxd" style="background-color: rgb(' + this.red[order_array[i]] + ', ' + this.green[order_array[i]] + ',' + this.blue[order_array[i]] + ');"></div>';
         }
 
         document.getElementById("log_colors").innerHTML = docStr;
@@ -182,48 +204,39 @@ var franz = {
 		return false;
 	},
 
-	resetIndex: function() {
-		/* keep track of original index so we don't have to revert
-		back to RGB just to display output */
-		for (var i=0; i < franz.alpha.length; i++) {
-            franz.origIndex[i] = i;
-		}
-		return false;
-	},
-
 	displayImg: function() {
-		franz.resetIndex();
-		franz.displayColors(franz.origIndex);
+		this.resetIndex();
+		this.displayColors(this.origIndex);
 		return false;
 	},
 	
     displayHue: function() {
-		franz.indexSort(franz.clone(franz.hue), 0, franz.alpha.length);
-		franz.displayColors(franz.origIndex);
+		this.indexSort(franz.util.clone(this.hue), 0, this.alpha.length);
+		this.displayColors(this.origIndex);
 		return false;
 	},
 	
     displaySat: function() {
-		franz.indexSort(franz.clone(franz.satV), 0, franz.alpha.length);	
-		franz.displayColors(franz.origIndex);
+		this.indexSort(franz.util.clone(this.satV), 0, this.alpha.length);	
+		this.displayColors(this.origIndex);
 		return false;
 	},
 	
     displayVal: function() {
-		franz.indexSort(franz.clone(franz.value), 0, franz.alpha.length);	
-		franz.displayColors(franz.origIndex);
+		this.indexSort(franz.util.clone(this.value), 0, this.alpha.length);	
+		this.displayColors(this.origIndex);
 		return false;
 	},
 	
     displaySatL: function() {
-		franz.indexSort(franz.clone(franz.satL), 0, franz.alpha.length);	
-		franz.displayColors(franz.origIndex);
+		this.indexSort(franz.util.clone(this.satL), 0, this.alpha.length);	
+		this.displayColors(this.origIndex);
 		return false;
 	},
 	
     displayLight: function() {
-		franz.indexSort(franz.clone(franz.light), 0, franz.alpha.length);	
-		franz.displayColors(franz.origIndex);
+		this.indexSort(franz.util.clone(this.light), 0, this.alpha.length);	
+		this.displayColors(this.origIndex);
 		return false;
 	},	
 	
@@ -242,7 +255,6 @@ var franz = {
 					count++;
 				}
 			}
-			console.log("frequency of values between " + i*step + " and " + (i*step + interval) + " = " + count);
 			densityArray[i] = count;
 		}
 		
@@ -251,17 +263,44 @@ var franz = {
 	
 	/* bubble sort floats around and pops in your face */
 	indexSort: function(inputArray, start, end) {
-		franz.resetIndex();
+		this.resetIndex();
 		for (var i = start; i < end;  i++) {
 			for (var j = end-1; j >= start; j--) {
 				var diff = inputArray[j] - inputArray[i]
 				if (diff > 0) {
 					inputArray.swap(i,j+1);
-					franz.origIndex.swap(i,j+1);
+					this.origIndex.swap(i,j+1);
 				}
 			}
 		}
 	},
+	
+	resetIndex: function() {
+		/* keep track of original index so we don't have to revert back to RGB just to display output */
+		for(var i = 0; i < this.alpha.length; i++) {
+            this.origIndex[i] = i;
+		}
+		return false;
+	}
+}
+
+franz.util = {
+	clone: function(obj) {
+		/* Utility function for deep cloning */
+		if(typeof obj !== "undefined") {
+            var returnObj = (obj instanceof Array) ? [] : {};
+    
+            for(i in obj) {
+                if(obj[i] != null && typeof obj[i] == "object") {
+                    returnObj[i] = franz.util.clone(obj[i]);
+                } else {
+                    returnObj[i] = obj[i];
+                }
+            }
+
+            return returnObj;
+        }
+    },
 	
     RGBtoHex: function(rgb) {
         var hex = [];

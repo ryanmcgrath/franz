@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<title>Franz - client side color palettes from logos</title>
+	<link rel="stylesheet" type="text/css" media="screen" href="css/example.css">
+    <script type="text/javascript" src="http://images.webs.com/static/global/js/jquery/jquery-1.3.2.min.js"></script>
+	<script type="text/javascript" src="js/franz.js"></script>
+    <script type="text/javascript">
+		var lol;
+		
+        $(document).ready(function() {
+	        lol = new franz({
+				canvas: "lol",
+				src: "awesome/lol.png",
+				callback: function() {
+					console.log("Instantiated new Franz instance");
+				}
+			});
+
+			$("#sort_hue").click(function() {
+				franz.displayHue();
+				return false;
+			}); 
+			
+			$("#sort_sat").click(function() {
+				franz.displaySat();
+				return false;
+			}); 
+			
+			$("#sort_val").click(function() {
+				franz.displayVal();
+				return false;
+			});
+            
+            $("#sort_light").click(function() {
+				franz.displayLight();
+				return false;
+			});
+			
+            $("#sort_satL").click(function() {
+				franz.displaySatL();
+				return false;
+			});
+        });
+    </script>
+</head>
+<body>
+
+<h1>Franz - client side color swatches</h1>
+
+<div id="container_top">
+    <a href="#" title="Upload an image" id="upload_button">Upload an image</a>
+    <div id="lol_container">
+	    <canvas id="lol" width="100" height="100"></canvas>
+        <canvas id="lol_hidden" width="33" height="33"></canvas>
+    </div>
+
+	<div id="interface">
+		<form id="uploader" name="uploader" method="post" action="upload.php" enctype="multipart/form-data">
+            <input id="file" type="file" name="dragonfruit">
+            <input type="submit" class="img_submit" value="Upload and be awesome">
+        </form>
+        <form method="post" action="#" id="franz_form">
+			<input type="text" id="img_input" value="awesome/lol.png">
+			<input type="submit" class="img_submit" value="Go for it!">
+		</form>
+	    <p id="try_these"><strong>Try out:</strong>
+            <a href="#" title="awesome/lol.png">lol.png</a>, 
+            <a href="#" title="awesome/testjubs.jpg">testjubs.jpg</a>, 
+            <a href="#" title="awesome/stars.jpg">stars.jpg</a>, 
+            <a href="#" title="awesome/1600.jpg">1600.jpg</a>, 
+            <a href="#" title="awesome/fallout.jpg">fallout.jpg</a>
+        </p>
+		
+    </div>
+</div>
+
+<canvas id="lol_texture" width="50" height="50" style="visibility: hidden; position: absolute; top: 0px; left: 0px;"></canvas>
+
+<div id="options">
+	<p id="hsv">
+        <a href="#" id="sort_hue" title="Sort by Hue">Sort by Hue</a> 
+        <a href="#" id="sort_sat" title="Sort by Saturation HSV">Saturation (HSV)</a>  
+        <a href="#" id="sort_satL" title="Sort by Saturation HSL">Saturation (HSL)</a> 
+        <a href="#" id="sort_val" title="Sort by Value">Value (HSV)</a> 
+        <a href="#" id="sort_light" title="Sort by Lightness">Lightness (HSL)</a> 
+    </p>
+</div>
+
+<div id="container_bottom">
+    <div id="log_colors">
+
+    </div>
+</div>
+
+<p id="footer">
+    This experiment was brought to you in Technicolor (get it?) by <a href="http://twitter.com/ryanmcgrath" title="Ryan McGrath">Ryan McGrath</a> & <a href="http://twitter.com/enotionz" title="Dominick Pham">Dominick Pham</a>,
+    two of the most awesome people you'll ever hear about. If you're interested in helping out,
+    hit up Franz on <a href="http://github.com/ryanmcgrath/franz/tree/master" title="Franz on GitHub">GitHub</a>!
+</p>
+
+</body>
+</html>
