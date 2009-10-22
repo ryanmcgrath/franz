@@ -31,11 +31,24 @@ var franz = function(franzProps) {
 		assume that anything occuring after getColors() is back in global-browser-use land.
 	*/
 	this.canvas_id = franzProps.canvas;
-	if(typeof document.getElementById(franzProps.canvas).getContext === "function") {
-		/* Canvas is natively supported, go down the normal path... */
-		this.canvas = document.getElementById(franzProps.canvas);
+	if(typeof document.createElement("canvas").getContext === "function") {
+		/* Canvas is natively supported, go down the normal path... append a new canvas off the viewport and draw our image onto it */
+		this.src = franzProps.src;
+        this.canvas = document.createElement("canvas");
+        this.canvas.width = 100;
+        this.canvas.height = 100;
+        this.canvas.style.visibility = "hidden";
+        this.canvas.style.position = "absolute";
+        this.canvas.style.top = 0 + "px";
+        this.canvas.style.left = "-" + 1000 + "px";
 		this.ctx = this.canvas.getContext('2d');
-		if(typeof franzProps.callback !== "undefined" && typeof franzProps.callback === "function") franzProps.callback();
+        
+        var that = this;
+        franz.util.loadEvent(function() {
+            document.body.appendChild(that.canvas);
+		    that.draw();
+            if(typeof franzProps.callback !== "undefined" && typeof franzProps.callback === "function") franzProps.callback();
+        });
 	} else {
 		/* 	We're dealing with something that belongs in an old folks home; throw in the life support. (Embed Flash junk) :(
 			Inject SWFObject so we can deal with Flash embedding in a sane manner...
@@ -44,7 +57,7 @@ var franz = function(franzProps) {
 			var newScript = document.createElement("script");
 			newScript.type = "text/javascript";
 			newScript.src = "/js/swfobject.js";
-			document.body.appendChild(newScript);
+			document.getElementsByTagName("head")[0].appendChild(newScript);
 
 			if(typeof franzProps.callback !== "undefined" && typeof franzProps.callback === "function") {
 				// Catch the callback function for IE...
@@ -79,16 +92,24 @@ franz.prototype = {
 	light: [],
 
 	origIndex: [],
+
+    extra_canvas: null,
+    extra_ctx: null,
 	
-	loadImg: function(img_src) {
+	draw: function(different_canvas) {
 		/* If you're looking for the non-<canvas> portion of this, check the associated Flash files. */
-		var working = this;
+		if(typeof different_canvas !== "undefined" && typeof different_canvas === "string") {
+            this.extra_canvas = document.getElementById(different_canvas);
+            this.extra_ctx = this.extra_canvas.getContext('2d');
+        }
+        
+        var working = this;
         working.img = new Image();
 		working.img.onload = function() {
-            working.ctx.drawImage(working.img, 0, 0, 100, 100);
+            (working.extra_ctx === null ? working.ctx : working.extra_ctx).drawImage(working.img, 0, 0, 100, 100);
 			setTimeout(function() { working.getColors(); }, 100);
 		}
-		working.img.src = img_src;
+		working.img.src = this.src;
 	},
 
 	getColors: function() {
@@ -313,5 +334,53 @@ franz.util = {
         }
         
         return '#' + hex.join('');
-    }
+    },
+    
+    loadEvent: function(func) {
+		if(typeof jQuery != "undefined") jQuery(document).ready(function() { func(); });
+		else franz.util.fallback_loadEvent(function() { func(); });
+	},
+
+	fallback_loadEvent: (function() {
+        var load_events = [], load_timer, script, done, exec, old_onload,
+			
+	    init = function () {
+            done = true;
+		    clearInterval(load_timer);
+            for(i = 0; i < load_events.length; i++) {
+		        exec = load_events.shift(); 
+                exec();
+		    }
+            if(script) script.onreadystatechange = '';
+	    };
+		
+	    return function(func) {
+	        if(done) return func();
+		
+            if(!load_events[0]) {
+		        if(document.addEventListener) document.addEventListener("DOMContentLoaded", init, false);
+		
+				/*@cc_on @*/ /*@if (@_win32) // Fairly obvious who this is for...
+				    document.write("<script id=__ie_onload defer src=//0><\/scr"+"ipt>");
+					script = document.getElementById("__ie_onload");
+					script.onreadystatechange = function() {
+					    if (this.readyState == "complete") init(); // call the onload handler
+					};
+				/*@end @*/
+		
+				if(/WebKit/i.test(navigator.userAgent)) {
+				    load_timer = setInterval(function() {
+					    if (/loaded|complete/.test(document.readyState)) init(); 
+					}, 10);
+				}
+		
+				old_onload = window.onload;
+				window.onload = function() {
+				    init();
+					if (old_onload) old_onload();
+				};
+			}
+			load_events.push(func);
+		}
+	})()
 }
