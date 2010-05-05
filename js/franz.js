@@ -42,7 +42,7 @@ var franz = function(franzProps) {
         this.canvas.style.top = 0 + "px";
         this.canvas.style.left = "-" + 1000 + "px";
 		this.ctx = this.canvas.getContext('2d');
-        
+
         var that = this;
         franz.util.loadEvent(function() {
             document.body.appendChild(that.canvas);
@@ -64,7 +64,7 @@ var franz = function(franzProps) {
 				newScript.onreadystatechange = function() {
 					if(newScript.readyState == "loaded" || newScript.readyState == "complete") franzProps.callback();
 					return false;
-				}
+				};
 
 				// Catch all other misguided browsers, just in case (Really old versions of Safari that don't have good <canvas> support will fail totally, but that's far too much to care about)
 				newScript.onload = function() {
@@ -79,20 +79,12 @@ var franz = function(franzProps) {
 	}
 }
 
-franz.prototype = {	
-	alpha: [],
-	red: [],
-	green: [],
-	blue: [],
-	
-	hue: [],
-	satV: [],
-	value: [],
-	satL: [],
-	light: [],
-
+franz.prototype = {
+    rgba: [],
+    hsb: [],
+    hsl: [],
 	origIndex: [],
-
+    
     extra_canvas: null,
     extra_ctx: null,
 	
@@ -108,7 +100,7 @@ franz.prototype = {
 		working.img.onload = function() {
             (working.extra_ctx === null ? working.ctx : working.extra_ctx).drawImage(working.img, 0, 0, 100, 100);
 			setTimeout(function() { working.getColors(); }, 100);
-		}
+		};
 		working.img.src = this.src;
 	},
 
@@ -121,14 +113,15 @@ franz.prototype = {
 		var imageData = extra_ctx.getImageData(1, 1, 32, 32).data;
 
         for(var i = 0; i*4 < imageData.length; i++) {
-            this.red[i] = imageData[i*4];
-            this.green[i] = imageData[i*4 + 1];
-            this.blue[i] = imageData[i*4 + 2];
-			this.alpha[i] = imageData[i*4 + 3];
+            this.rgba[i] = new Array(4);
+            this.rgba[i][0] = imageData[i*4];            
+            this.rgba[i][1] = imageData[i*4 + 1];
+            this.rgba[i][2] = imageData[i*4 + 2];
+			this.rgba[i][3] = imageData[i*4 + 3];
         }
 
 		/* get hue sat val array */
-		this.RGBtoHSVHL();
+		this.getHSB();
 
 		/* show original image */
 		this.displayImg();
@@ -136,83 +129,23 @@ franz.prototype = {
 		return false;
 	},
 	
-	/* Converts RGB to the Hue/Saturation/Value, Saturation/Lightness model */
-	RGBtoHSVHL: function() {
-		var min, max;
-		
-		for(var i = 0; i < this.alpha.length; i++) {
-			this.value[i] = this.getValHSV(this.red[i], this.green[i], this.blue[i]);
-			this.satV[i] = this.getSatHSV(this.red[i], this.green[i], this.blue[i]);
-			this.hue[i] = this.getHue(this.red[i], this.green[i], this.blue[i]);
-			
-			this.satL[i] = this.getSatHSL(this.red[i], this.green[i], this.blue[i]);
-			this.light[i] = this.getLightHSL(this.red[i], this.green[i], this.blue[i]);
-		}
-		
-		return false
+	/* Converts RGB to the Hue/Saturation/Brightness*/
+	getHSB: function() {
+        if ( this.rgba.length > 0 ){
+            for(var i = 0; i < this.rgba.length; i++) {
+                this.hsb[i] = franz.util.RGBtoHSB(this.rgba[i]);
+                this.hsb[i][3] = i;     /* this is to keep the original index reference to the rgb domain */
+            }
+            return true;
+        } else { return false; }
 	},
 
-	getHue: function(red, green, blue) {
-		var min = Math.min(red, Math.min(green, blue)),
-            max = Math.max(red, Math.max(green, blue)), 
-            delta = max - min, 
-            hue;
-		
-        if (max == min)
-			return 0;
-		else {
-			if(red == max)
-				hue = (green - blue) / delta;	//between yellow & magenta
-			else if(green == max)
-				hue = 2 + (blue - red) / delta;	//between cyan & yellow
-			else
-				hue = 4 + (red - green) / delta;	//between magenta & cyan
-			
-			// hue degrees
-			hue = hue * 60;
-			if(hue < 0) hue += 360;
-		}
-		
-		return hue;
-	},
-	
-    getSatHSV: function(red, green, blue) {
-		var min = Math.min(red, Math.min(green, blue)), 
-            max = Math.max(red, Math.max(green, blue)),
-            delta = max - min, 
-            sat = delta / max;
-		
-		return sat;
-	},
-	
-	getValHSV: function(red, green, blue) { return Math.max(red, Math.max(green,blue)); },
-	
-	getSatHSL: function(red, green, blue) {
-		var min = Math.min(red, Math.min(green, blue)), 
-            max = Math.max(red, Math.max(green, blue)), 
-		    lightness = this.getLightHSL(),
-            sat;
-		
-		if(min == max) return 0;
-		
-		if(lightness < 1/2)	sat = (max-min)/(max+min);
-		else sat = (max - min) / (2 - (max + min));
-		
-		return sat;		
-	},
-	
-	getLightHSL: function(red, green, blue) {
-		var min = Math.min(red, Math.min(green, blue)), 
-            max = Math.max(red, Math.max(green, blue));
-		return 0.5 * (min + max);
-	},
-	
 	displayColors: function(order_array) {
 		console.log("displaying colors");
         var docStr = "";
 		
-        for(var i = 0; i < this.alpha.length; i++) {
-			docStr += '<div class="color_boxd" style="background-color: rgb(' + this.red[order_array[i]] + ', ' + this.green[order_array[i]] + ',' + this.blue[order_array[i]] + ');"></div>';
+        for(var i = 0; i < this.rgba.length; i++) {
+			docStr += '<div class="color_boxd" style="background-color: rgb(' + this.rgba[order_array[i]][0] + ', ' + this.rgba[order_array[i]][1] + ',' + this.rgba[order_array[i]][2] + ');"></div>';
         }
 
         document.getElementById("log_colors").innerHTML = docStr;
@@ -221,7 +154,7 @@ franz.prototype = {
             setTimeout(function() { $("#testLayout").fadeIn("slow"); }, 500);
         }
         else document.getElementById("container_bottom").style.display = "block";
-		
+
 		return false;
 	},
 
@@ -230,36 +163,25 @@ franz.prototype = {
 		this.displayColors(this.origIndex);
 		return false;
 	},
-	
-    displayHue: function() {
-		this.indexSort(franz.util.clone(this.hue), 0, this.alpha.length);
-		this.displayColors(this.origIndex);
+
+    displayHue: function() { this.sortArray(this.hsb,0); },
+    displaySat: function() { this.sortArray(this.hsb,1); },
+    displayBright: function() { this.sortArray(this.hsb,2); },
+
+    /* array should be a (rgba.length)x4 2d array where position 0,1, or 2
+        eg: pass in hsb ==>  hsb[] = [h,s,b,index][]
+        position = 0   --->  sort by hue
+        position = 1   --->  sort by saturation
+        position = 2   --->  sort by brightness
+     */
+    sortArray: function(array,position) {
+        array.sort(function(a,b){ return a[position] - b[position]; });
+
+        var index = [];
+        for(var i=0;i<array.length;i++){index[i] = array[i][3];}    /* rebuilding index */
+		this.displayColors(index);
 		return false;
-	},
-	
-    displaySat: function() {
-		this.indexSort(franz.util.clone(this.satV), 0, this.alpha.length);	
-		this.displayColors(this.origIndex);
-		return false;
-	},
-	
-    displayVal: function() {
-		this.indexSort(franz.util.clone(this.value), 0, this.alpha.length);	
-		this.displayColors(this.origIndex);
-		return false;
-	},
-	
-    displaySatL: function() {
-		this.indexSort(franz.util.clone(this.satL), 0, this.alpha.length);	
-		this.displayColors(this.origIndex);
-		return false;
-	},
-	
-    displayLight: function() {
-		this.indexSort(franz.util.clone(this.light), 0, this.alpha.length);	
-		this.displayColors(this.origIndex);
-		return false;
-	},	
+    },
 	
 	/* calculates density of array data given interval and step size - both controlling data error
 		step size should ideally be < interval. Returns array with (# of intervals) as size */
@@ -281,24 +203,10 @@ franz.prototype = {
 		
 		return densityArray;
 	},
-	
-	/* bubble sort floats around and pops in your face */
-	indexSort: function(inputArray, start, end) {
-		this.resetIndex();
-		for (var i = start; i < end;  i++) {
-			for (var j = end-1; j >= start; j--) {
-				var diff = inputArray[j] - inputArray[i]
-				if (diff > 0) {
-					inputArray.swap(i,j+1);
-					this.origIndex.swap(i,j+1);
-				}
-			}
-		}
-	},
-	
+
 	resetIndex: function() {
 		/* keep track of original index so we don't have to revert back to RGB just to display output */
-		for(var i = 0; i < this.alpha.length; i++) {
+		for(var i = 0; i < this.rgba.length; i++) {
             this.origIndex[i] = i;
 		}
 		return false;
@@ -306,23 +214,53 @@ franz.prototype = {
 }
 
 franz.util = {
-	clone: function(obj) {
-		/* Utility function for deep cloning */
-		if(typeof obj !== "undefined") {
-            var returnObj = (obj instanceof Array) ? [] : {};
-    
-            for(i in obj) {
-                if(obj[i] != null && typeof obj[i] == "object") {
-                    returnObj[i] = franz.util.clone(obj[i]);
-                } else {
-                    returnObj[i] = obj[i];
-                }
-            }
 
-            return returnObj;
-        }
+    RGBtoHSB: function(rgb) {
+        var hsb = new Array(3);
+        var min = Math.min(rgb[0], Math.min(rgb[1], rgb[2])),
+            max = Math.max(rgb[0], Math.max(rgb[1], rgb[2])),
+            delta = max - min;
+
+        hsb[0] = this.getHue(rgb,min,max,delta); /* hue */
+        hsb[1] = delta/max; /* saturation */
+        hsb[2] = max;   /* brightness */
+        return hsb;
     },
-	
+
+    RGBtoHSL: function(rgb) {
+        var min = Math.min(rgb[0], Math.min(rgb[1], rgb[2])),
+            max = Math.max(rgb[0], Math.max(rgb[1], rgb[2])),
+            delta = max-min;
+        var hsl = new Array(3), sat, lightness = 0.5*(min + max);
+
+		if(min == max) sat = 0;
+		if(lightness < 1/2)	sat = (max-min)/(max+min);
+		else sat = (max - min) / (2 - (max + min));
+
+        hsl[0] = this.getHue(rgb,min,max,delta); /* hue */
+        hsl[1] = sat; /* saturation */
+        hsl[2] = lightness;   /* lightness */
+        return hsl;
+    },
+
+    /* hue is shared for both hsl and hsv */
+    getHue: function(rgb,min,max,delta) {
+        var hue; 
+        if (max === min) { return 0; } else {
+			if(rgb[0] === max)
+				hue = (rgb[1] - rgb[2]) / delta;	//between yellow & magenta
+			else if(rgb[1] === max)
+				hue = 2 + (rgb[2] - rgb[0]) / delta;	//between cyan & yellow
+			else
+				hue = 4 + (rgb[0] - rgb[1]) / delta;	//between magenta & cyan
+
+			// hue degrees
+			hue = parseInt(hue * 60);
+			if(hue < 0) hue += 360;
+		}
+        return hue;
+    },
+
     RGBtoHex: function(rgb) {
         var hex = [];
 
@@ -334,6 +272,23 @@ franz.util = {
         }
         
         return '#' + hex.join('');
+    },
+
+	clone: function(obj) {
+		/* Utility function for deep cloning */
+		if(typeof obj !== "undefined") {
+            var returnObj = (obj instanceof Array) ? [] : {};
+
+            for(i in obj) {
+                if(obj[i] != null && typeof obj[i] == "object") {
+                    returnObj[i] = franz.util.clone(obj[i]);
+                } else {
+                    returnObj[i] = obj[i];
+                }
+            }
+
+            return returnObj;
+        }
     },
     
     loadEvent: function(func) {
