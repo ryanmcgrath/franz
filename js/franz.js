@@ -46,7 +46,7 @@ var franz = function(franzProps) {
         var that = this;
         franz.util.loadEvent(function() {
             document.body.appendChild(that.canvas);
-		    that.draw();
+            typeof that.canvas_id !== 'undefined' ? that.draw(that.canvas_id) : that.draw();
             if(typeof franzProps.callback !== "undefined" && typeof franzProps.callback === "function") franzProps.callback();
         });
 	} else {
@@ -83,7 +83,6 @@ franz.prototype = {
     rgba: [],
     hsb: [],
     hsl: [],
-	origIndex: [],
     
     extra_canvas: null,
     extra_ctx: null,
@@ -94,7 +93,7 @@ franz.prototype = {
             this.extra_canvas = document.getElementById(different_canvas);
             this.extra_ctx = this.extra_canvas.getContext('2d');
         }
-        
+
         var working = this;
         working.img = new Image();
 		working.img.onload = function() {
@@ -108,7 +107,7 @@ franz.prototype = {
 		/* If you're looking for the non-<canvas> portion of this, check the associated Flash files. */
         var hidden_canvas = document.getElementById("lol_hidden"),
             extra_ctx = hidden_canvas.getContext('2d');
-        
+
         extra_ctx.drawImage(this.img, 0, 0, 33, 33);
 		var imageData = extra_ctx.getImageData(1, 1, 32, 32).data;
 
@@ -141,11 +140,15 @@ franz.prototype = {
 	},
 
 	displayColors: function(order_array) {
-		console.log("displaying colors");
         var docStr = "";
-		
-        for(var i = 0; i < this.rgba.length; i++) {
-			docStr += '<div class="color_boxd" style="background-color: rgb(' + this.rgba[order_array[i]][0] + ', ' + this.rgba[order_array[i]][1] + ',' + this.rgba[order_array[i]][2] + ');"></div>';
+        if (typeof order_array === 'undefined'){
+            for(var i = 0; i < this.rgba.length; i++) {
+                docStr += '<div class="color_boxd" style="background-color: rgb(' + this.rgba[i][0] + ', ' + this.rgba[i][1] + ',' + this.rgba[i][2] + ');"></div>';
+            }
+        } else {
+            for(var i = 0; i < this.rgba.length; i++) {
+                docStr += '<div class="color_boxd" style="background-color: rgb(' + this.rgba[order_array[i]][0] + ', ' + this.rgba[order_array[i]][1] + ',' + this.rgba[order_array[i]][2] + ');"></div>';
+            }
         }
 
         document.getElementById("log_colors").innerHTML = docStr;
@@ -159,14 +162,19 @@ franz.prototype = {
 	},
 
 	displayImg: function() {
-		this.resetIndex();
-		this.displayColors(this.origIndex);
+		this.displayColors();
 		return false;
 	},
 
-    displayHue: function() { this.sortArray(this.hsb,0); },
-    displaySat: function() { this.sortArray(this.hsb,1); },
-    displayBright: function() { this.sortArray(this.hsb,2); },
+    displayHue: function() { this.sortArray(this.hsb,0); this.displayOut(this.hsb); },
+    displaySat: function() { this.sortArray(this.hsb,1); this.displayOut(this.hsb);},
+    displayBright: function() { this.sortArray(this.hsb,2); this.displayOut(this.hsb);},
+    displayOut: function(array) {
+        var index = [];
+        for(var i=0;i<array.length;i++){index[i] = array[i][3];}    /* rebuilding index */
+		this.displayColors(index);
+		return false;
+    },
 
     /* array should be a (rgba.length)x4 2d array where position 0,1, or 2
         eg: pass in hsb ==>  hsb[] = [h,s,b,index][]
@@ -176,11 +184,6 @@ franz.prototype = {
      */
     sortArray: function(array,position) {
         array.sort(function(a,b){ return a[position] - b[position]; });
-
-        var index = [];
-        for(var i=0;i<array.length;i++){index[i] = array[i][3];}    /* rebuilding index */
-		this.displayColors(index);
-		return false;
     },
 	
 	/* calculates density of array data given interval and step size - both controlling data error
@@ -202,14 +205,6 @@ franz.prototype = {
 		}
 		
 		return densityArray;
-	},
-
-	resetIndex: function() {
-		/* keep track of original index so we don't have to revert back to RGB just to display output */
-		for(var i = 0; i < this.rgba.length; i++) {
-            this.origIndex[i] = i;
-		}
-		return false;
 	}
 }
 

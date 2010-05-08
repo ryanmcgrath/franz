@@ -27,20 +27,10 @@
                 return false;
             });
 
-			$("#sort_hue").click(function() {
-				lol.displayHue();
-				return false;
-			}); 
-			
-			$("#sort_sat").click(function() {
-				lol.displaySat();
-				return false;
-			}); 
-			
-			$("#sort_val").click(function() {
-				lol.displayBright();
-				return false;
-			});
+			$("#sort_reset").click( function() { lol.displayImg(); return false; });
+			$("#sort_hue").click( function() { lol.displayHue(); return false; });			
+			$("#sort_sat").click( function() { lol.displaySat(); return false; });
+			$("#sort_val").click( function() { lol.displayBright(); return false; });
         });
     </script>
 </head>
@@ -79,6 +69,7 @@
 
 <div id="options">
 	<p id="hsv">
+        <a href="#" id="sort_reset" title="Reset to original">Reset</a> 
         <a href="#" id="sort_hue" title="Sort by Hue">Sort by Hue</a> 
         <a href="#" id="sort_sat" title="Sort by Saturation">Saturation</a>
         <a href="#" id="sort_val" title="Sort by Brightness">Brightness</a>
