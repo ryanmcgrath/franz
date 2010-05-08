@@ -31,6 +31,13 @@
 			$("#sort_hue").click( function() { lol.displayHue(); return false; });			
 			$("#sort_sat").click( function() { lol.displaySat(); return false; });
 			$("#sort_val").click( function() { lol.displayBright(); return false; });
+            $("#display_gradient").click( function() {
+                var hex1 = window.prompt("Enter the first color (hexidemical)");
+                var hex2 = window.prompt("Enter the second color (hexidemical)");
+                if (!hex1 || !hex2) return false;
+                
+                franz.prototype.displayColors(franz.util.getGradient(franz.util.HextoRGB(hex1),franz.util.HextoRGB(hex2),32*32))
+            });
         });
     </script>
 </head>
@@ -61,7 +68,14 @@
             <a href="#" title="awesome/1600.jpg">1600.jpg</a>, 
             <a href="#" title="awesome/fallout.jpg">fallout.jpg</a>
         </p>
-		
+    </div>
+
+    <div id="core_function">
+	    <p><strong>Franz core functionality (not canvas related):</strong>
+            <div>
+               <a id="display_gradient" class="effect_button" href="#" title="gradient">Get Gradient</a>
+            </div>
+        </p>
     </div>
 </div>
 

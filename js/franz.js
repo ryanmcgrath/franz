@@ -139,14 +139,14 @@ franz.prototype = {
         } else { return false; }
 	},
 
-	displayColors: function(order_array) {
+	displayColors: function(color_array, order_array) {
         var docStr = "";
         if (typeof order_array === 'undefined'){
-            for(var i = 0; i < this.rgba.length; i++) {
-                docStr += '<div class="color_boxd" style="background-color: rgb(' + this.rgba[i][0] + ', ' + this.rgba[i][1] + ',' + this.rgba[i][2] + ');"></div>';
+            for(var i = 0; i < color_array.length; i++) {
+                docStr += '<div class="color_boxd" style="background-color: rgb(' + color_array[i][0] + ', ' + color_array[i][1] + ',' + color_array[i][2] + ');"></div>';
             }
         } else {
-            for(var i = 0; i < this.rgba.length; i++) {
+            for(var i = 0; i < color_array.length; i++) {
                 docStr += '<div class="color_boxd" style="background-color: rgb(' + this.rgba[order_array[i]][0] + ', ' + this.rgba[order_array[i]][1] + ',' + this.rgba[order_array[i]][2] + ');"></div>';
             }
         }
@@ -162,7 +162,7 @@ franz.prototype = {
 	},
 
 	displayImg: function() {
-		this.displayColors();
+		this.displayColors(this.rgba);
 		return false;
 	},
 
@@ -172,7 +172,7 @@ franz.prototype = {
     displayOut: function(array) {
         var index = [];
         for(var i=0;i<array.length;i++){index[i] = array[i][3];}    /* rebuilding index */
-		this.displayColors(index);
+		this.displayColors(this.rgba,index);
 		return false;
     },
 
@@ -184,28 +184,7 @@ franz.prototype = {
      */
     sortArray: function(array,position) {
         array.sort(function(a,b){ return a[position] - b[position]; });
-    },
-	
-	/* calculates density of array data given interval and step size - both controlling data error
-		step size should ideally be < interval. Returns array with (# of intervals) as size */
-	getDensity: function(inputArray, step, interval, max) {
-		var size = max/step;
-		var densityArray = new Array(size);
-		
-		for (var i=0; i < size; i++) {
-			var count = 0;
-			
-			for (var j=0; j < inputArray.length; j++) {
-				// if entry is within current interval
-				if ((inputArray[j] > i*step) && (inputArray[j] < i*step + interval)){
-					count++;
-				}
-			}
-			densityArray[i] = count;
-		}
-		
-		return densityArray;
-	}
+    }
 }
 
 franz.util = {
@@ -268,6 +247,43 @@ franz.util = {
         
         return '#' + hex.join('');
     },
+
+    HextoRGB: function(h) {
+        if (h.charAt(0)=="#") h = h.substring(1,7);
+        return [parseInt(h.substring(0,2),16), parseInt(h.substring(2,4),16),parseInt(h.substring(4,6),16)];
+    },
+    
+    /* Sample call: lol.displayColors(franz.util.getGradient([255,0,0],[255,255,0],32*32)) */
+    getGradient: function(rgb1,rgb2,steps) {
+        var grad = new Array();
+        var rgbSlope = [(rgb2[0]-rgb1[0])/steps,(rgb2[1]-rgb1[1])/steps,(rgb2[2]-rgb1[2])/steps];
+
+        for(var i=0; i<steps; i++){
+            grad.push([rgb1[0] + parseInt(i*rgbSlope[0]), rgb1[1] + parseInt(i*rgbSlope[1]), rgb1[2] + parseInt(i*rgbSlope[2])]);
+        }
+        return grad;
+    },
+
+	/* calculates density of array data given interval and step size - both controlling data error
+		step size should ideally be < interval. Returns array with (# of intervals) as size */
+	getDensity: function(inputArray, step, interval, max) {
+		var size = max/step;
+		var densityArray = new Array(size);
+
+		for (var i=0; i < size; i++) {
+			var count = 0;
+
+			for (var j=0; j < inputArray.length; j++) {
+				// if entry is within current interval
+				if ((inputArray[j] > i*step) && (inputArray[j] < i*step + interval)){
+					count++;
+				}
+			}
+			densityArray[i] = count;
+		}
+
+		return densityArray;
+	},
 
 	clone: function(obj) {
 		/* Utility function for deep cloning */

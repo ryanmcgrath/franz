@@ -112,7 +112,7 @@ a:hover { text-decoration: underline; }
 	width: 370px;
 }
 
-.img_submit, #hsv a, #hsl a {
+.img_submit, #hsv a, #hsl a, a.effect_button {
 	border: 1px solid #55a2c9;
 	background-color: #498fb2;
 	color: #fff;
@@ -121,7 +121,7 @@ a:hover { text-decoration: underline; }
 	-webkit-border-radius: 4px;
 }
 
-#hsv a, #hsl a {
+#hsv a, #hsl a, a.effect_button {
 	display: block;
 	width: 105px;
 	padding: 3px 0;
@@ -130,11 +130,19 @@ a:hover { text-decoration: underline; }
 	margin-right: 10px;
 	text-decoration: none;
 }
-
+a.effect_button {
+    padding: 0;
+}
 #options a:last-child { margin-right: 0px; }
 
 #try_these {
 	clear: both;
+}
+
+#core_function {
+    clear: both;
+    padding-top: 10px;
+    font: 1.2em/1.5em helvetica,sans-serif;
 }
 
 #logHSV {
